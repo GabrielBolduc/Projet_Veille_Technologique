@@ -25,7 +25,7 @@ J’ai décider de choisir le projet d’API de télémétrie automobile pour pl
 * **Ressources nécessaires :** Un outil SDD (OpenSpec ou SpecKit), Postman pour faire des requêtes API (ou autres outils de test API), un Raspberry Pi, un adapteur OBD2 Bluetooth et mon véhicule. 
  
 ## Proposition formelle
-
+### AutoPI
 ### Introduction
 L’intelligence artificielle transforme le développement logiciel ainsi que la façon dont nous apprenons la programmation. La rédaction manuelle du code semble progressivement se transformer vers l’architecture par IA. C’est pourquoi je souhaite explorer le volet développement en découvrant pour la première fois le Specification Driven Development. L’objectif de mon projet est de démontrer comment l’IA peut permettre de générer un gérer une infrastructure backend dédier à l’IoT.
  
