@@ -1,0 +1,36 @@
+site_name: AutoPI
+site_description: Documentation sur le projet AutoPI
+site_author: Gabriel Bolduc
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: teal
+      accent: cyan
+      toggle:
+        icon: material/brightness-7
+        name: Mode sombre
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: teal
+      accent: cyan
+      toggle:
+        icon: material/brightness-4
+        name: Mode clair
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - content.code.copy
+
+plugins:
+  - search
+
+nav:
+  - Introduction: index.md
+  - Architecture Matérielle: 
+    - Configuration du Pi: hardware/pi_setup.md
+    - Adaptateur OBD2: hardware/obd2_veepeak.md
+  - Backend & Spécifications:
+    - Contrat OpenSpec: backend/specs.md
