@@ -4,6 +4,8 @@ site_author: Gabriel Bolduc
 
 theme:
   name: material
+  icon:
+    logo: material/car-connected
   palette:
     - scheme: default
       primary: blue grey
@@ -26,9 +28,9 @@ plugins:
   - search
 
 nav:
-  - Introduction: Proposition_Formelle/Proposition_formelle.md
-  - Architecture Matérielle: 
-    - Configuration du Pi: hardware/pi_setup.md
-    - Adaptateur OBD2: hardware/obd2_veepeak.md
-  - Backend & Spécifications:
-    - Contrat OpenSpec: backend/specs.md
+  - Introduction: index.md
+  - Architecture Matérielle & Backend: 
+    - Hardware: AMB/hardware.md
+    - Spécifications OpenSpec: AMB/specs.md
+    - Données de Télémétrie: AMB/telemetrie.md
+    - Logique Backend: AMB/backend.md
