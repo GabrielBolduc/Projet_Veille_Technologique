@@ -13,10 +13,10 @@
       
       
       
-        <link rel="prev" href="../../Proposition_Formelle/Proposition_formelle/">
+        <link rel="prev" href="../specs/">
       
       
-        <link rel="next" href="../obd2_veepeak/">
+        <link rel="next" href="../backend/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Configuration du Pi - AutoPI</title>
+        <title>Données de Télémétrie - AutoPI</title>
       
     
     
@@ -77,6 +77,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#logique-dacquisition-de-la-telemetrie" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -90,7 +95,7 @@
     <a href="../.." title="AutoPI" class="md-header__button md-logo" aria-label="AutoPI" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 14h14l-1.5-4.5h-11zm12.5 5a1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5 1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5m-11 0A1.5 1.5 0 0 0 8 17.5 1.5 1.5 0 0 0 6.5 16 1.5 1.5 0 0 0 5 17.5 1.5 1.5 0 0 0 6.5 19M18.92 9 21 15v8a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H6v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-8l2.08-6c.2-.58.77-1 1.42-1h11c.65 0 1.22.42 1.42 1M12 0c2.12 0 4.15.86 5.65 2.35l-1.42 1.42A6.02 6.02 0 0 0 12 2c-1.58 0-3.11.65-4.23 1.77L6.36 2.35A8 8 0 0 1 12 0m0 4c1.06 0 2.07.44 2.82 1.18L13.4 6.6c-.37-.37-.87-.6-1.4-.6-.5 0-1.03.23-1.4.6L9.18 5.18C9.93 4.44 10.94 4 12 4"/></svg>
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -107,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Configuration du Pi
+              Données de Télémétrie
             
           </span>
         </div>
@@ -206,7 +211,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../Proposition_Formelle/Proposition_formelle/" class="md-tabs__link">
+      <a href="../.." class="md-tabs__link">
         
   
   
@@ -229,31 +234,11 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="./" class="md-tabs__link">
+        <a href="../hardware/" class="md-tabs__link">
           
   
   
-  Architecture Matérielle
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../backend/specs/" class="md-tabs__link">
-          
-  
-  
-  Backend & Spécifications
+  Architecture Matérielle & Backend
 
         </a>
       </li>
@@ -286,7 +271,7 @@
     <a href="../.." title="AutoPI" class="md-nav__button md-logo" aria-label="AutoPI" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 14h14l-1.5-4.5h-11zm12.5 5a1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5 1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5m-11 0A1.5 1.5 0 0 0 8 17.5 1.5 1.5 0 0 0 6.5 16 1.5 1.5 0 0 0 5 17.5 1.5 1.5 0 0 0 6.5 19M18.92 9 21 15v8a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H6v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-8l2.08-6c.2-.58.77-1 1.42-1h11c.65 0 1.22.42 1.42 1M12 0c2.12 0 4.15.86 5.65 2.35l-1.42 1.42A6.02 6.02 0 0 0 12 2c-1.58 0-3.11.65-4.23 1.77L6.36 2.35A8 8 0 0 1 12 0m0 4c1.06 0 2.07.44 2.82 1.18L13.4 6.6c-.37-.37-.87-.6-1.4-.6-.5 0-1.03.23-1.4.6L9.18 5.18C9.93 4.44 10.94 4 12 4"/></svg>
 
     </a>
     AutoPI
@@ -301,7 +286,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../Proposition_Formelle/Proposition_formelle/" class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -356,7 +341,7 @@
   <span class="md-ellipsis">
     
   
-    Architecture Matérielle
+    Architecture Matérielle & Backend
   
 
     
@@ -372,11 +357,67 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Architecture Matérielle
+    Architecture Matérielle & Backend
   
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../hardware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../specs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spécifications OpenSpec
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -391,6 +432,26 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Données de Télémétrie
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -399,7 +460,7 @@
   <span class="md-ellipsis">
     
   
-    Configuration du Pi
+    Données de Télémétrie
   
 
     
@@ -408,6 +469,36 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-telemetrie-collecter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Télémétrie collecter
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -421,101 +512,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../obd2_veepeak/" class="md-nav__link">
+      <a href="../backend/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Adaptateur OBD2
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Backend & Spécifications
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Backend & Spécifications
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../backend/specs/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Contrat OpenSpec
+    Logique Backend
   
 
     
@@ -553,6 +557,27 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-telemetrie-collecter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Télémétrie collecter
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -569,9 +594,60 @@
 
 
 
-  <h1>Configuration du Pi</h1>
-
-
+<h1 id="logique-dacquisition-de-la-telemetrie">Logique d'Acquisition de la Télémétrie</h1>
+<p>Cette section détaille l'architecture logicielle du script de collecte de données exécuté sur le Raspberry Pi Zero 2 W.</p>
+<hr />
+<h2 id="1-telemetrie-collecter">1. Télémétrie collecter</h2>
+<p>Pour assurer un suivi précis du comportement du véhicule sans saturer le Pi, je me limite à 6 données. La bibliothèque <code>python-obd</code> mappe ces paramètres sur des commandes standardisées :</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Métrique</th>
+<th style="text-align: left;">Commande <code>python-obd</code></th>
+<th style="text-align: left;">Fréquence cible</th>
+<th style="text-align: left;">Utilité technique</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Régime Moteur</strong></td>
+<td style="text-align: left;"><code>obd.commands.RPM</code></td>
+<td style="text-align: left;">Haute (~10Hz)</td>
+<td style="text-align: left;">Analyse de la sollicitation moteur et des passages de rapports.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Vitesse</strong></td>
+<td style="text-align: left;"><code>obd.commands.SPEED</code></td>
+<td style="text-align: left;">Haute (~10Hz)</td>
+<td style="text-align: left;">Calcul des distances, de l'efficience et corrélations dynamiques.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Charge Moteur</strong></td>
+<td style="text-align: left;"><code>obd.commands.ENGINE_LOAD</code></td>
+<td style="text-align: left;">Moyenne (~2Hz)</td>
+<td style="text-align: left;">Mesure de la puissance demandée relative à la capacité maximale.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Température Reliquat</strong></td>
+<td style="text-align: left;"><code>obd.commands.COOLANT_TEMP</code></td>
+<td style="text-align: left;">Basse (~0.1Hz)</td>
+<td style="text-align: left;">Surveillance thermique et validation de la température optimale.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Position Accélérateur</strong></td>
+<td style="text-align: left;"><code>obd.commands.THROTTLE_POS</code></td>
+<td style="text-align: left;">Haute (~10Hz)</td>
+<td style="text-align: left;">Capture instantanée de l'intention du conducteur.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Codes d'Erreur (DTC)</strong></td>
+<td style="text-align: left;"><code>obd.commands.GET_DTC</code></td>
+<td style="text-align: left;">Basse (Au démarrage)</td>
+<td style="text-align: left;">Diagnostic à distance et alertes de maintenance préventive.</td>
+</tr>
+</tbody>
+</table>
+<hr />
 
 
 

@@ -13,10 +13,10 @@
       
       
       
-        <link rel="prev" href="../pi_setup/">
+        <link rel="prev" href="../hardware/">
       
       
-        <link rel="next" href="../../backend/specs/">
+        <link rel="next" href="../telemetrie/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Adaptateur OBD2 - AutoPI</title>
+        <title>Spécifications OpenSpec - AutoPI</title>
       
     
     
@@ -77,6 +77,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#fonctionnement-de-openspec" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -90,7 +95,7 @@
     <a href="../.." title="AutoPI" class="md-header__button md-logo" aria-label="AutoPI" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 14h14l-1.5-4.5h-11zm12.5 5a1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5 1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5m-11 0A1.5 1.5 0 0 0 8 17.5 1.5 1.5 0 0 0 6.5 16 1.5 1.5 0 0 0 5 17.5 1.5 1.5 0 0 0 6.5 19M18.92 9 21 15v8a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H6v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-8l2.08-6c.2-.58.77-1 1.42-1h11c.65 0 1.22.42 1.42 1M12 0c2.12 0 4.15.86 5.65 2.35l-1.42 1.42A6.02 6.02 0 0 0 12 2c-1.58 0-3.11.65-4.23 1.77L6.36 2.35A8 8 0 0 1 12 0m0 4c1.06 0 2.07.44 2.82 1.18L13.4 6.6c-.37-.37-.87-.6-1.4-.6-.5 0-1.03.23-1.4.6L9.18 5.18C9.93 4.44 10.94 4 12 4"/></svg>
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -107,7 +112,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Adaptateur OBD2
+              Spécifications OpenSpec
             
           </span>
         </div>
@@ -206,7 +211,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../Proposition_Formelle/Proposition_formelle/" class="md-tabs__link">
+      <a href="../.." class="md-tabs__link">
         
   
   
@@ -229,31 +234,11 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../pi_setup/" class="md-tabs__link">
+        <a href="../hardware/" class="md-tabs__link">
           
   
   
-  Architecture Matérielle
-
-        </a>
-      </li>
-    
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../backend/specs/" class="md-tabs__link">
-          
-  
-  
-  Backend & Spécifications
+  Architecture Matérielle & Backend
 
         </a>
       </li>
@@ -286,7 +271,7 @@
     <a href="../.." title="AutoPI" class="md-nav__button md-logo" aria-label="AutoPI" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 14h14l-1.5-4.5h-11zm12.5 5a1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5 1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5m-11 0A1.5 1.5 0 0 0 8 17.5 1.5 1.5 0 0 0 6.5 16 1.5 1.5 0 0 0 5 17.5 1.5 1.5 0 0 0 6.5 19M18.92 9 21 15v8a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H6v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-8l2.08-6c.2-.58.77-1 1.42-1h11c.65 0 1.22.42 1.42 1M12 0c2.12 0 4.15.86 5.65 2.35l-1.42 1.42A6.02 6.02 0 0 0 12 2c-1.58 0-3.11.65-4.23 1.77L6.36 2.35A8 8 0 0 1 12 0m0 4c1.06 0 2.07.44 2.82 1.18L13.4 6.6c-.37-.37-.87-.6-1.4-.6-.5 0-1.03.23-1.4.6L9.18 5.18C9.93 4.44 10.94 4 12 4"/></svg>
 
     </a>
     AutoPI
@@ -301,7 +286,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../Proposition_Formelle/Proposition_formelle/" class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -356,7 +341,7 @@
   <span class="md-ellipsis">
     
   
-    Architecture Matérielle
+    Architecture Matérielle & Backend
   
 
     
@@ -372,7 +357,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Architecture Matérielle
+    Architecture Matérielle & Backend
   
 
           </label>
@@ -385,14 +370,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../pi_setup/" class="md-nav__link">
+      <a href="../hardware/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Configuration du Pi
+    Hardware
   
 
     
@@ -419,6 +404,26 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spécifications OpenSpec
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -427,7 +432,7 @@
   <span class="md-ellipsis">
     
   
-    Adaptateur OBD2
+    Spécifications OpenSpec
   
 
     
@@ -437,69 +442,118 @@
 
       </a>
       
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-larchitecture-du-repertoire-openspec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. L'Architecture du Répertoire OpenSpec
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. L&#39;Architecture du Répertoire OpenSpec">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-la-bibliotheque-de-specifications-openspecspecs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A. La Bibliothèque de Spécifications (openspec/specs/)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-le-systeme-de-changements-openspecchanges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B. Le Système de Changements (openspec/changes/)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-le-cycle-de-developpement-en-3-etapes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Le Cycle de Développement en 3 Étapes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Le Cycle de Développement en 3 Étapes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#etape-21-la-proposition-opsxpropose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Étape 2.1 : La Proposition (/opsx:propose)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#etape-22-la-revue" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Étape 2.2 : La Revue
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#etape-23-lapplication-du-plan-opsxapply" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Étape 2.3 : L'Application du Plan (/opsx:apply)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
               
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Backend & Spécifications
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Backend & Spécifications
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
             
               
                 
@@ -508,14 +562,42 @@
   
   
     <li class="md-nav__item">
-      <a href="../../backend/specs/" class="md-nav__link">
+      <a href="../telemetrie/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Contrat OpenSpec
+    Données de Télémétrie
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logique Backend
   
 
     
@@ -553,6 +635,105 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-larchitecture-du-repertoire-openspec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. L'Architecture du Répertoire OpenSpec
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. L&#39;Architecture du Répertoire OpenSpec">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-la-bibliotheque-de-specifications-openspecspecs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        A. La Bibliothèque de Spécifications (openspec/specs/)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-le-systeme-de-changements-openspecchanges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        B. Le Système de Changements (openspec/changes/)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-le-cycle-de-developpement-en-3-etapes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Le Cycle de Développement en 3 Étapes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Le Cycle de Développement en 3 Étapes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#etape-21-la-proposition-opsxpropose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Étape 2.1 : La Proposition (/opsx:propose)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#etape-22-la-revue" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Étape 2.2 : La Revue
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#etape-23-lapplication-du-plan-opsxapply" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Étape 2.3 : L'Application du Plan (/opsx:apply)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -569,9 +750,31 @@
 
 
 
-  <h1>Adaptateur OBD2</h1>
-
-
+<h1 id="fonctionnement-de-openspec">Fonctionnement de OpenSpec</h1>
+<p>Cette section documente le fonctionnement du framework OpenSpec. </p>
+<h2 id="1-larchitecture-du-repertoire-openspec">1. L'Architecture du Répertoire OpenSpec</h2>
+<p>L'initialisation d'OpenSpec ajoute un dossier racine <code>openspec/</code> au dépôt du projet. Ce dossier est séparé en deux section distinctes :</p>
+<h3 id="a-la-bibliotheque-de-specifications-openspecspecs">A. La Bibliothèque de Spécifications (<code>openspec/specs/</code>)</h3>
+<p>C'est la documentation. Elle décrit l'état actuel et réel de l'application (ex: protocoles de communication du Pi, contrats d'API, architecture de la base de données). Les agents IA s'y réfèrent en tout temps pour comprendre le contexte global avant toute modification.</p>
+<h3 id="b-le-systeme-de-changements-openspecchanges">B. Le Système de Changements (<code>openspec/changes/</code>)</h3>
+<p>C'est l'element central <em>Specification-Driven Development</em>. Chaque nouvelle fonctionnalité ou modification logicielle fait l'objet d'un sous-dossier isolé dans cette section. C'est ici que l'évolution du code est planifiée et validée avant d'être écrite.</p>
+<hr />
+<h2 id="2-le-cycle-de-developpement-en-3-etapes">2. Le Cycle de Développement en 3 Étapes</h2>
+<p>Le framework impose un workflow déterministe pour garantir la qualité du design logiciel.</p>
+<h3 id="etape-21-la-proposition-opsxpropose">Étape 2.1 : La Proposition (<code>/opsx:propose</code>)</h3>
+<p>L'IA génère automatiquement plusieurs fichiers Markdown standardisés dans le dossier <code>openspec/changes/add-user-auth/</code> :</p>
+<ul>
+<li><code>proposal.md</code> : Définit le quoi et le pourquoi de la fonctionnalité (les objectifs commerciaux et techniques).</li>
+<li><code>design.md</code> : Décrit l'approche technique exacte, les choix d'architecture et les impacts sur les systèmes existants.</li>
+<li><code>tasks.md</code> : Une checklist d'implémentation atomique (tâches courtes et précises).</li>
+<li><code>specs/</code> (Deltas) : Les fichiers montrant précisément comment la documentation vivante (<code>openspec/specs/</code>) sera modifiée une fois le code écrit.</li>
+</ul>
+<h2 id="etape-22-la-revue">Étape 2.2 : La Revue</h2>
+<p>Il faut analyser, corrige et valide les fichiers Markdown générés.</p>
+<h2 id="etape-23-lapplication-du-plan-opsxapply">Étape 2.3 : L'Application du Plan (<code>/opsx:apply</code>)</h2>
+<p>Une fois le design et la liste des tâches validés par l'humain, la commande d'implémentation est lancée :</p>
+<pre><code class="language-bash">/opsx:apply
+</code></pre>
 
 
 
