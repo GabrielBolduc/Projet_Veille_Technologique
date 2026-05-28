@@ -1,0 +1,25 @@
+{
+  "openspec": "0.1.0",
+  "info": {
+    "title": "AutoPI Telemetry System",
+    "version": "1.0.0",
+    "description": "Contrat d'interface pour l'ingestion de la télémétrie OBD-II vers le backend embarqué ASP.NET Core."
+  },
+  "telemetry": {
+    "payload_structure": {
+      "device_id": "string",
+      "timestamp": "string (ISO 8601)",
+      "metrics": {
+        "engine_rpm": "integer",
+        "vehicle_speed": "integer",
+        "throttle_position": "number",
+        "engine_load": "number",
+        "coolant_temperature": "number"
+      },
+      "diagnostics": {
+        "dtc_present": "boolean",
+        "dtc_codes": "array of strings"
+      }
+    }
+  }
+}
