@@ -1,0 +1,853 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation sur le projet AutoPI">
+      
+      
+        <meta name="author" content="Gabriel Bolduc">
+      
+      
+      
+        <link rel="prev" href="../..">
+      
+      
+        <link rel="next" href="../specs/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Hardware - AutoPI</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#architecture-materielle-configuration" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="AutoPI" class="md-header__button md-logo" aria-label="AutoPI" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 14h14l-1.5-4.5h-11zm12.5 5a1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5 1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5m-11 0A1.5 1.5 0 0 0 8 17.5 1.5 1.5 0 0 0 6.5 16 1.5 1.5 0 0 0 5 17.5 1.5 1.5 0 0 0 6.5 19M18.92 9 21 15v8a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H6v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-8l2.08-6c.2-.58.77-1 1.42-1h11c.65 0 1.22.42 1.42 1M12 0c2.12 0 4.15.86 5.65 2.35l-1.42 1.42A6.02 6.02 0 0 0 12 2c-1.58 0-3.11.65-4.23 1.77L6.36 2.35A8 8 0 0 1 12 0m0 4c1.06 0 2.07.44 2.82 1.18L13.4 6.6c-.37-.37-.87-.6-1.4-.6-.5 0-1.03.23-1.4.6L9.18 5.18C9.93 4.44 10.94 4 12 4"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            AutoPI
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Hardware
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="blue-grey" data-md-color-accent="indigo"  aria-label="Passer au mode sombre"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Passer au mode sombre" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="blue-grey" data-md-color-accent="indigo"  aria-label="Passer au mode clair"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Passer au mode clair" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Introduction
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  Architecture Matérielle & Backend
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="AutoPI" class="md-nav__button md-logo" aria-label="AutoPI" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M5 14h14l-1.5-4.5h-11zm12.5 5a1.5 1.5 0 0 0 1.5-1.5 1.5 1.5 0 0 0-1.5-1.5 1.5 1.5 0 0 0-1.5 1.5 1.5 1.5 0 0 0 1.5 1.5m-11 0A1.5 1.5 0 0 0 8 17.5 1.5 1.5 0 0 0 6.5 16 1.5 1.5 0 0 0 5 17.5 1.5 1.5 0 0 0 6.5 19M18.92 9 21 15v8a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-1H6v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-8l2.08-6c.2-.58.77-1 1.42-1h11c.65 0 1.22.42 1.42 1M12 0c2.12 0 4.15.86 5.65 2.35l-1.42 1.42A6.02 6.02 0 0 0 12 2c-1.58 0-3.11.65-4.23 1.77L6.36 2.35A8 8 0 0 1 12 0m0 4c1.06 0 2.07.44 2.82 1.18L13.4 6.6c-.37-.37-.87-.6-1.4-.6-.5 0-1.03.23-1.4.6L9.18 5.18C9.93 4.44 10.94 4 12 4"/></svg>
+
+    </a>
+    AutoPI
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture Matérielle & Backend
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Architecture Matérielle & Backend
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hardware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-composants-materiels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Composants Matériels
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-configuration-du-raspberry-pi-mode-headless" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Configuration du Raspberry Pi (Mode Headless)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-configuration-de-lobd2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Configuration de l'OBD2
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Configuration de l&#39;OBD2">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#etape-31-debloquer-et-lancer-lutilitaire-bluetooth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Étape 3.1 : Débloquer et lancer l'utilitaire Bluetooth
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#etape-32-connection-bluetooth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Étape 3.2 : Connection Bluetooth
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#etape-33-liaison-au-port-serie-virtuel-avec-rfcomm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Étape 3.3 : Liaison au port série virtuel avec RFCOMM
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-environnement-logiciel-de-collecte-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Environnement Logiciel de Collecte (Python)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../specs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spécifications OpenSpec
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../telemetrie/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Données de Télémétrie
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../backend/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logique Backend
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-composants-materiels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Composants Matériels
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-configuration-du-raspberry-pi-mode-headless" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Configuration du Raspberry Pi (Mode Headless)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-configuration-de-lobd2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Configuration de l'OBD2
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Configuration de l&#39;OBD2">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#etape-31-debloquer-et-lancer-lutilitaire-bluetooth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Étape 3.1 : Débloquer et lancer l'utilitaire Bluetooth
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#etape-32-connection-bluetooth" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Étape 3.2 : Connection Bluetooth
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#etape-33-liaison-au-port-serie-virtuel-avec-rfcomm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Étape 3.3 : Liaison au port série virtuel avec RFCOMM
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-environnement-logiciel-de-collecte-python" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Environnement Logiciel de Collecte (Python)
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="architecture-materielle-configuration">Architecture Matérielle &amp; Configuration</h1>
+<p>Cette section documente la configuration physique du projet, l'installation du Raspberry Pi en mode headless ainsi que les étapes de connection du Bluetooth avec l'adaptateur OBD-II.</p>
+<hr />
+<h2 id="1-composants-materiels">1. Composants Matériels</h2>
+<p>Le système embarqué utilise les composants suivants pour assurer la capture et la transmission des données du véhicule :</p>
+<ul>
+<li><strong>Calculateur Embarqué :</strong> Raspberry Pi Zero 2 W (choisi pour sa compacité et sa faible consommation électrique).</li>
+<li><strong>Interface OBD-II :</strong> Adaptateur Bluetooth <strong>Veepeak OBDCheck VP11</strong> (basé sur une puce ELM327 v1.5).</li>
+<li><strong>Alimentation :</strong> Adaptateur d'alimentation allume-cigare 12V</li>
+</ul>
+<hr />
+<h2 id="2-configuration-du-raspberry-pi-mode-headless">2. Configuration du Raspberry Pi (Mode Headless)</h2>
+<p>Pour configurer le Pi sans y brancher de moniteur ni de clavier, j’utilise le mode Headless. Il faut donc configurer le Pi avec Raspberry Pi Imager et flasher une carte micro sd</p>
+<h2 id="3-configuration-de-lobd2">3. Configuration de l'OBD2</h2>
+<p>L'adaptateur doit être jumelé avec le Pi afin de créer une passerelle de communication avec la voiture.</p>
+<h3 id="etape-31-debloquer-et-lancer-lutilitaire-bluetooth">Étape 3.1 : Débloquer et lancer l'utilitaire Bluetooth</h3>
+<p>Par default le Bluetooth est bloquée par le système au démarrage, il faut exécuter ces commandes :</p>
+<pre><code class="language-bash">sudo rfkill unblock bluetooth
+sudo systemctl restart bluetooth
+</code></pre>
+<p>Accéder ensuite au commande de gestion Bluetooth :</p>
+<pre><code class="language-bash">sudo bluetoothctl
+</code></pre>
+<h3 id="etape-32-connection-bluetooth">Étape 3.2 : Connection Bluetooth</h3>
+<p>Dans le terminal <code>bluetoothctl</code>, pour connecter le bluetooth :</p>
+<pre><code>power on
+agent on
+default-agent
+scan on
+</code></pre>
+<p>Lorsque l'adresse MAC est identifiée, on peut faire le jumelage</p>
+<pre><code>pair 66:1E:87:05:BD:41
+trust 66:1E:87:05:BD:41
+exit
+</code></pre>
+<blockquote>
+<p>Le mot de passe par défaut pour valider la connection est <code>1234</code>.</p>
+</blockquote>
+<h3 id="etape-33-liaison-au-port-serie-virtuel-avec-rfcomm">Étape 3.3 : Liaison au port série virtuel avec RFCOMM</h3>
+<p>Pour permettre aux scripts de lire les données, l'adresse Bluetooth est liée au périphérique virtuel <code>/dev/rfcomm0</code> :</p>
+<pre><code class="language-bash">sudo rfcomm bind rfcomm0 66:1E:87:05:BD:41 1
+</code></pre>
+<p>Pour valider la création du fichier :</p>
+<pre><code class="language-bash">ls -l /dev/rfcomm0
+</code></pre>
+<p>Sortie attendue :</p>
+<pre><code>crw-rw---- 1 root dialout ... /dev/rfcomm0
+</code></pre>
+<hr />
+<h2 id="4-environnement-logiciel-de-collecte-python">4. Environnement Logiciel de Collecte (Python)</h2>
+<p>Pour lire les données, le Pi doit exécuter un script Python qui communique avec l’adapteur avec la library python-obd.</p>
+<p><strong>Installation des dépendances sur le Pi :</strong></p>
+<pre><code class="language-bash">sudo apt update
+sudo apt install python3-pip python3-serial -y
+pip3 install obd --break-system-packages
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
