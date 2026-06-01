@@ -4,8 +4,7 @@ import time
 from datetime import datetime, timezone
 
 API_URL = "http://localhost:5000/api/telemetry"
-PORT = "/dev/rfcomm0"
-
+PORT = PORT = "COM3"
 HIGH_FREQ_INTERVAL = 0.1  # 10 Hz
 LOW_FREQ_INTERVAL = 10.0  # 0.1 Hz
 
@@ -18,6 +17,8 @@ def _val(response):
 
 
 def connect():
+    # Connexion physique sur le port COM de Windows
+    print(f"[INFO] Tentative de connexion à l'adaptateur sur {PORT}...")
     connection = obd.OBD(PORT)
     return connection
 

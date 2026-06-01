@@ -6,15 +6,19 @@ public class TelemetryProcessor(ChannelReader<TelemetryPayload> reader, ILogger<
     : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+{
+    await foreach (var payload in reader.ReadAllAsync(stoppingToken))
     {
-        await foreach (var payload in reader.ReadAllAsync(stoppingToken))
-        {
-            logger.LogInformation(
-                "Payload reçu — device={DeviceId} ts={Timestamp} rpm={Rpm} speed={Speed}",
-                payload.DeviceId,
-                payload.Timestamp,
-                payload.Metrics.EngineRpm,
-                payload.Metrics.VehicleSpeed);
-        }
+        logger.LogInformation(
+            "[{Time}] {Device} -> RPM: {Rpm} | Vit: {Speed} km/h | Throttle: {Throttle}% | Coolant: {Coolant}°C | Load: {Load}%",
+            payload.Timestamp,
+            payload.DeviceId,
+            payload.Metrics.EngineRpm?.ToString() ?? "N/A",
+            payload.Metrics.VehicleSpeed?.ToString() ?? "N/A",
+            payload.Metrics.ThrottlePosition?.ToString() ?? "N/A",
+            payload.Metrics.CoolantTemperature?.ToString() ?? "N/A",
+            payload.Metrics.EngineLoad?.ToString() ?? "N/A"
+        );
     }
+}
 }

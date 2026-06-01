@@ -14,15 +14,16 @@ builder.Services.AddSingleton(channel.Reader);
 builder.Services.AddSingleton(channel.Writer);
 builder.Services.AddHostedService<TelemetryProcessor>();
 
+builder.Services.ConfigureHttpJsonOptions(options => {
+    options.SerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.SnakeCaseLower;
+});
+
 var app = builder.Build();
 
 app.MapPost("/api/telemetry", async (TelemetryPayload payload, ChannelWriter<TelemetryPayload> writer) =>
 {
     await writer.WriteAsync(payload);
     return Results.Accepted();
-});
-builder.Services.ConfigureHttpJsonOptions(options => {
-    options.SerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.SnakeCaseLower;
 });
 
 app.Run();
