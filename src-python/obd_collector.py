@@ -1,12 +1,17 @@
-import obd
-import requests
+import math
+import random
 import time
 from datetime import datetime, timezone
+import requests
 
+SIMULATION = True # Mode Simulation 
 API_URL = "http://localhost:5000/api/telemetry"
-PORT = PORT = "COM3"
+PORT = "COM3"
 HIGH_FREQ_INTERVAL = 0.1  # 10 Hz
 LOW_FREQ_INTERVAL = 10.0  # 0.1 Hz
+
+if not SIMULATION:
+    import obd
 
 
 def _val(response):
@@ -17,13 +22,45 @@ def _val(response):
 
 
 def connect():
-    # Connexion physique sur le port COM de Windows
+    if SIMULATION:
+        print("[INFO] [MODE SIMULATION] Connexion virtuelle établie.")
+        # On retourne un objet factice qui possède la méthode is_connected()
+        class MockConn:
+
+            def is_connected(self):
+                return True
+
+        return MockConn()
+
     print(f"[INFO] Tentative de connexion à l'adaptateur sur {PORT}...")
     connection = obd.OBD(PORT)
     return connection
 
 
+# Variables globales pour générer une simulation fluide (ondes sinusoïdales)
+_sim_tick = 0
+
+
 def query_high_freq(conn):
+    global _sim_tick
+    if SIMULATION:
+        _sim_tick += 0.05
+        # Génère une courbe qui monte et descend proprement
+        base_wave = (math.sin(_sim_tick) + 1) / 2  # Entre 0 et 1
+
+        # On fait monter le RPM jusqu'à 6200 pour faire flasher ta Shift Light (seuil à 5500)
+        rpm = 800 + (base_wave * 5400) + random.randint(-50, 50)
+        # La vitesse suit logiquement le régime
+        speed = base_wave * 130 + random.randint(-1, 1)
+        # Le throttle simule des coups de gaz
+        throttle = base_wave * 100
+
+        return {
+            "rpm": max(800, rpm),
+            "speed_kmh": max(0, speed),
+            "throttle_pos_pct": max(0, min(100, throttle)),
+        }
+
     return {
         "rpm": _val(conn.query(obd.commands.RPM)),
         "speed_kmh": _val(conn.query(obd.commands.SPEED)),
@@ -32,6 +69,13 @@ def query_high_freq(conn):
 
 
 def query_low_freq(conn):
+    if SIMULATION:
+        # Simule un moteur chaud stable et une charge variable
+        return {
+            "coolant_temp_c": 92 + random.randint(-1, 1),
+            "engine_load_pct": random.uniform(15.0, 85.0),
+        }
+
     return {
         "coolant_temp_c": _val(conn.query(obd.commands.COOLANT_TEMP)),
         "engine_load_pct": _val(conn.query(obd.commands.ENGINE_LOAD)),
@@ -39,21 +83,33 @@ def query_low_freq(conn):
 
 
 def build_payload(high_data, low_data):
-    iso_timestamp = datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+    iso_timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    # Simulation d'un code DTC bidon une fois de temps en temps pour tester ton UI
+    # Décommente les lignes ci-dessous si tu veux voir la bannière "Check Engine" s'allumer !
+    dtc_present = False
+    dtc_codes = []
+    if random.random() > 0.85:
+         dtc_present = True
+         dtc_codes = ["P0300", "P0101"]
+
     return {
         "device_id": "Volvo-S60-T5",
         "timestamp": iso_timestamp,
         "metrics": {
-            "engine_rpm": int(high_data["rpm"]) if high_data["rpm"] is not None else None,
-            "vehicle_speed": int(high_data["speed_kmh"]) if high_data["speed_kmh"] is not None else None,
+            "engine_rpm": (
+                int(high_data["rpm"]) if high_data["rpm"] is not None else None
+            ),
+            "vehicle_speed": (
+                int(high_data["speed_kmh"])
+                if high_data["speed_kmh"] is not None
+                else None
+            ),
             "throttle_position": high_data["throttle_pos_pct"],
             "engine_load": low_data["engine_load_pct"],
-            "coolant_temperature": low_data["coolant_temp_c"]
+            "coolant_temperature": low_data["coolant_temp_c"],
         },
-        "diagnostics": {
-            "dtc_present": False,
-            "dtc_codes": []
-        }
+        "diagnostics": {"dtc_present": dtc_present, "dtc_codes": dtc_codes},
     }
 
 
@@ -68,10 +124,14 @@ def send_payload(payload):
 def main():
     conn = connect()
     if not conn.is_connected():
-        print(f"[ERROR] Impossible de se connecter à l'adaptateur OBD-II sur {PORT}")
+        print(
+            f"[ERROR] Impossible de se connecter à l'adaptateur OBD-II sur {PORT}"
+        )
         return
 
-    print(f"[INFO] Connecté à {PORT}. Démarrage de la collecte...")
+    print(
+        f"[INFO] Connecté ({'SIMULATION' if SIMULATION else PORT}). Démarrage..."
+    )
 
     low_freq_cache = {"coolant_temp_c": None, "engine_load_pct": None}
     last_low_freq_time = 0.0

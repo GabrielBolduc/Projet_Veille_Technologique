@@ -1,255 +1,386 @@
-@page "/"
+﻿@page "/"
 @inject NavigationManager Navigation
 @rendermode InteractiveServer
+@implements IAsyncDisposable
 
 <PageTitle>AutoPi Dashboard</PageTitle>
 
-<div class="dashboard">
-    <header class="dashboard-header">
-        <h1>AutoPi Telemetry Dashboard</h1>
-        <span class="status @(IsConnected ? "connected" : "disconnected")">
-            @(IsConnected ? "Connecté" : "Déconnecté")
+@if (DtcPresent)
+{
+    <div class="dtc-bar">
+        <span class="dtc-label">CHECK ENGINE</span>
+        <span class="dtc-codes">@string.Join("  ·  ", DtcCodes)</span>
+    </div>
+}
+
+<div class="shell">
+
+    <header class="hdr">
+        <span class="hdr-title">AutoPi Telemetry</span>
+        <span class="hdr-status @(IsConnected ? "on" : "off")">
+            @(IsConnected ? "LIVE" : "OFFLINE")
         </span>
     </header>
 
-    <div class="gauges-grid">
+    <main class="grid">
 
-        <!-- RPM Gauge -->
-        <div class="gauge-card">
-            <div class="circular-gauge rpm-gauge">
-                <svg viewBox="0 0 120 120" class="gauge-svg">
-                    <circle cx="60" cy="60" r="50" class="gauge-bg" />
-                    <circle cx="60" cy="60" r="50" class="gauge-track rpm-track"
-                            stroke-dasharray="@(RpmArc) 314"
-                            transform="rotate(-90 60 60)" />
-                    <circle cx="60" cy="60" r="50" class="gauge-redzone"
-                            stroke-dasharray="@(RpmRedArc) 314"
-                            stroke-dashoffset="@(-RpmRedOffset)"
-                            transform="rotate(-90 60 60)" />
-                </svg>
-                <div class="gauge-center">
-                    <span class="gauge-value">@Rpm</span>
-                    <span class="gauge-unit">tr/min</span>
+        <!-- Vitesse -->
+        <section class="primary-cell">
+            <span class="metric-label">VITESSE</span>
+            <span class="metric-value @(Speed > 200 ? "crit" : "")">@Speed</span>
+            <span class="metric-unit">km / h</span>
+            <svg class="sparkline" viewBox="0 0 120 24" preserveAspectRatio="none">
+                @if (SpeedHistory.Count > 1)
+                {
+                    <polyline points="@SpeedChartPoints" class="spark-line" />
+                }
+            </svg>
+            <div class="metric-sub">
+                <span class="sub-label">MAX SESSION</span>
+                <span class="sub-value">@MaxSpeed <span class="sub-unit">km/h</span></span>
+            </div>
+        </section>
+
+        <!-- RPM -->
+        <section class="primary-cell">
+            <span class="metric-label">RPM</span>
+            <span class="metric-value @(IsShiftLightActive ? "crit" : "")">@Rpm.ToString("N0")</span>
+            <span class="metric-unit">tr / min</span>
+            <svg class="sparkline" viewBox="0 0 120 24" preserveAspectRatio="none">
+                @if (RpmHistory.Count > 1)
+                {
+                    <polyline points="@RpmChartPoints" class="spark-line" />
+                }
+            </svg>
+            <div class="metric-sub">
+                <span class="sub-label">MAX SESSION</span>
+                <span class="sub-value">@MaxRpm.ToString("N0")</span>
+            </div>
+        </section>
+
+        <!-- Panneau secondaire -->
+        <aside class="side-panel">
+
+            <div class="side-row">
+                <span class="side-label">THROTTLE</span>
+                <div class="side-data">
+                    <span class="side-value">@Throttle.ToString("F1")<span class="side-unit">%</span></span>
+                </div>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width:@(Throttle.ToString("F0"))%"></div>
                 </div>
             </div>
-            <p class="gauge-label">RPM</p>
-        </div>
 
-        <!-- Vitesse Gauge -->
-        <div class="gauge-card">
-            <div class="circular-gauge speed-gauge">
-                <svg viewBox="0 0 120 120" class="gauge-svg">
-                    <circle cx="60" cy="60" r="50" class="gauge-bg" />
-                    <circle cx="60" cy="60" r="50" class="gauge-track speed-track"
-                            stroke-dasharray="@(SpeedArc) 314"
-                            transform="rotate(-90 60 60)" />
-                </svg>
-                <div class="gauge-center">
-                    <span class="gauge-value">@Speed</span>
-                    <span class="gauge-unit">km/h</span>
+            <div class="sep"></div>
+
+            <div class="side-row">
+                <span class="side-label">CHARGE MOTEUR</span>
+                <div class="side-data">
+                    <span class="side-value">@EngineLoad.ToString("F1")<span class="side-unit">%</span></span>
+                </div>
+                <div class="bar-track">
+                    <div class="bar-fill" style="width:@(EngineLoad.ToString("F0"))%"></div>
                 </div>
             </div>
-            <p class="gauge-label">Vitesse</p>
-        </div>
 
-        <!-- Température Coolant -->
-        <div class="gauge-card">
-            <div class="circular-gauge coolant-gauge">
-                <svg viewBox="0 0 120 120" class="gauge-svg">
-                    <circle cx="60" cy="60" r="50" class="gauge-bg" />
-                    <circle cx="60" cy="60" r="50" class="gauge-track @(CoolantTemp > 100 ? "coolant-hot" : "coolant-track")"
-                            stroke-dasharray="@(CoolantArc) 314"
-                            transform="rotate(-90 60 60)" />
-                </svg>
-                <div class="gauge-center">
-                    <span class="gauge-value">@CoolantTemp</span>
-                    <span class="gauge-unit">°C</span>
+            <div class="sep"></div>
+
+            <div class="side-row">
+                <span class="side-label">TEMP. LIQUIDE</span>
+                <div class="side-data">
+                    <span class="side-value @(CoolantTemp > 105 ? "crit" : "")">
+                        @((int)CoolantTemp)<span class="side-unit">°C</span>
+                    </span>
+                </div>
+                <div class="bar-track">
+                    <div class="bar-fill @(CoolantTemp > 105 ? "bar-crit" : "")"
+                         style="width:@(Math.Clamp((CoolantTemp - 40) / 80.0 * 100, 0, 100).ToString("F0"))%">
+                    </div>
                 </div>
             </div>
-            <p class="gauge-label">Température Liquide</p>
-        </div>
 
-        <!-- Throttle Bar -->
-        <div class="gauge-card bar-card">
-            <p class="gauge-label">Throttle</p>
-            <div class="bar-container">
-                <div class="bar-fill throttle-bar" style="width: @(Throttle)%"></div>
-            </div>
-            <span class="bar-value">@Throttle.ToString("F1")%</span>
-        </div>
+        </aside>
 
-        <!-- Engine Load Bar -->
-        <div class="gauge-card bar-card">
-            <p class="gauge-label">Charge Moteur</p>
-            <div class="bar-container">
-                <div class="bar-fill load-bar" style="width: @(EngineLoad)%"></div>
-            </div>
-            <span class="bar-value">@EngineLoad.ToString("F1")%</span>
-        </div>
+    </main>
 
-    </div>
 </div>
 
 <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@300;400&display=swap');
 
-    .dashboard {
-        min-height: 100vh;
-        background: #0d0d0d;
-        color: #e0e0e0;
-        font-family: 'Segoe UI', sans-serif;
-        padding: 24px;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+        --bg:      #8c8c8f;
+        --card:    #8c8c8f;
+        --border:  #1f1f23;
+        --txt:     #070707;
+        --muted:   #fa0404;
+        --dim:     #3a3a46;
+        --crit:    #ff3333;
+        --accent:  #4a7fa5;
+        --fn:      'Inter', system-ui, sans-serif;
+        --fm:      'Roboto Mono', 'SF Mono', 'Courier New', monospace;
     }
 
-    .dashboard-header {
+    body { background: var(--bg); }
+
+    /* DTC */
+    .dtc-bar {
         display: flex;
         align-items: center;
         gap: 16px;
-        margin-bottom: 32px;
+        padding: 7px 20px;
+        background: #100404;
+        border-bottom: 1px solid #2a0808;
+        font-family: var(--fn);
+        font-size: 0.72rem;
+        letter-spacing: 0.06em;
+    }
+    .dtc-label { color: var(--crit); font-weight: 700; letter-spacing: 0.18em; }
+    .dtc-codes { color: #a06060; }
+
+    /* Shell */
+    .shell {
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--txt);
+        font-family: var(--fn);
     }
 
-    .dashboard-header h1 {
-        font-size: 1.6rem;
+    /* Header */
+    .hdr {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 13px 20px;
+        border-bottom: 1px solid var(--border);
+    }
+    .hdr-title {
+        font-size: 0.78rem;
         font-weight: 600;
-        color: #ffffff;
+        color: var(--muted);
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
     }
-
-    .status {
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 600;
+    .hdr-status {
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        padding: 3px 10px;
+        border-radius: 2px;
     }
+    .hdr-status.on  { color: #3fc77a; background: #081408; border: 1px solid #1c3a22; }
+    .hdr-status.off { color: var(--crit); background: #140808; border: 1px solid #3a1414; }
 
-    .status.connected { background: #1a4a1a; color: #4caf50; border: 1px solid #4caf50; }
-    .status.disconnected { background: #4a1a1a; color: #f44336; border: 1px solid #f44336; }
-
-    .gauges-grid {
+    /* Main grid — asymmetric 3 columns */
+    .grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 24px;
-        max-width: 1000px;
+        grid-template-columns: 1fr 1fr 210px;
+        min-height: calc(100vh - 46px);
     }
 
-    .gauge-card {
-        background: #1a1a1a;
-        border: 1px solid #2a2a2a;
-        border-radius: 12px;
-        padding: 20px;
+    /* Primary cells */
+    .primary-cell {
+        padding: 36px 28px 28px;
+        border-right: 1px solid var(--border);
         display: flex;
         flex-direction: column;
-        align-items: center;
-        gap: 12px;
     }
 
-    .circular-gauge {
-        position: relative;
-        width: 140px;
-        height: 140px;
+    .metric-label {
+        font-size: 0.62rem;
+        font-weight: 600;
+        color: var(--dim);
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
     }
 
-    .gauge-svg {
-        width: 100%;
-        height: 100%;
-        transform: scaleY(-1);
-    }
-
-    .gauge-bg { fill: none; stroke: #2a2a2a; stroke-width: 10; }
-
-    .gauge-track { fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dasharray 0.2s ease; }
-
-    .rpm-track   { stroke: #ff6b35; }
-    .speed-track { stroke: #2196f3; }
-    .coolant-track { stroke: #4caf50; }
-    .coolant-hot   { stroke: #f44336; }
-    .gauge-redzone { fill: none; stroke: #7b0000; stroke-width: 10; }
-
-    .gauge-center {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-    }
-
-    .gauge-value {
-        display: block;
-        font-size: 1.6rem;
-        font-weight: 700;
-        color: #ffffff;
+    .metric-value {
+        font-family: var(--fm);
+        font-size: 5rem;
+        font-weight: 300;
+        color: var(--txt);
         line-height: 1;
+        letter-spacing: -0.03em;
+        margin-top: 8px;
+        transition: color 0.4s;
+    }
+    .metric-value.crit { color: var(--crit); }
+
+    .metric-unit {
+        font-size: 0.68rem;
+        color: var(--dim);
+        letter-spacing: 0.12em;
+        margin-top: 5px;
     }
 
-    .gauge-unit {
-        font-size: 0.7rem;
-        color: #888;
-        letter-spacing: 0.05em;
+    /* Sparkline */
+    .sparkline {
+        width: 100%;
+        height: 24px;
+        display: block;
+        margin-top: 16px;
+    }
+    .spark-line {
+        fill: none;
+        stroke: var(--accent);
+        stroke-width: 1;
+        stroke-linecap: round;
+        stroke-linejoin: round;
     }
 
-    .gauge-label {
-        font-size: 0.85rem;
-        color: #aaa;
-        text-align: center;
-        font-weight: 500;
+    /* Session max */
+    .metric-sub {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        margin-top: 12px;
+    }
+    .sub-label {
+        font-size: 0.58rem;
+        font-weight: 600;
+        color: #2e2e38;
+        letter-spacing: 0.18em;
+    }
+    .sub-value {
+        font-family: var(--fm);
+        font-size: 0.88rem;
+        font-weight: 400;
+        color: var(--muted);
+    }
+    .sub-unit {
+        font-size: 0.65rem;
+        color: var(--dim);
+        margin-left: 2px;
     }
 
-    .bar-card {
-        align-items: stretch;
-        gap: 8px;
+    /* Side panel */
+    .side-panel {
+        background: var(--card);
+        border-left: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
     }
 
-    .bar-card .gauge-label { text-align: left; color: #ccc; font-size: 0.9rem; }
+    .side-row {
+        padding: 20px 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
 
-    .bar-container {
-        background: #2a2a2a;
-        border-radius: 6px;
-        height: 28px;
+    .sep { height: 1px; background: var(--border); flex-shrink: 0; }
+
+    .side-label {
+        font-size: 0.59rem;
+        font-weight: 600;
+        color: #2e2e38;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+    }
+
+    .side-data { display: flex; align-items: baseline; }
+
+    .side-value {
+        font-family: var(--fm);
+        font-size: 1.6rem;
+        font-weight: 300;
+        color: var(--txt);
+        transition: color 0.4s;
+    }
+    .side-value.crit { color: var(--crit); }
+
+    .side-unit {
+        font-size: 0.65rem;
+        color: var(--dim);
+        margin-left: 3px;
+        font-family: var(--fn);
+    }
+
+    /* Thin progress bar — 3 px, no gradient */
+    .bar-track {
+        height: 3px;
+        background: var(--border);
+        border-radius: 2px;
         overflow: hidden;
     }
-
     .bar-fill {
         height: 100%;
-        border-radius: 6px;
-        transition: width 0.2s ease;
-        min-width: 0;
+        background: var(--dim);
+        border-radius: 2px;
+        transition: width 0.25s ease;
+    }
+    .bar-fill.bar-crit { background: var(--crit); }
+
+    /* Mobile */
+    @@media (max-width: 640px) {
+        .grid {
+            grid-template-columns: 1fr;
+            min-height: unset;
+        }
+        .primary-cell {
+            border-right: none;
+            border-bottom: 1px solid var(--border);
+            padding: 24px 18px 20px;
+        }
+        .metric-value { font-size: 3.8rem; }
+        .side-panel {
+            border-left: none;
+            border-top: 1px solid var(--border);
+        }
+        .side-row { padding: 16px 18px; }
+        .side-value { font-size: 1.4rem; }
     }
 
-    .throttle-bar { background: linear-gradient(90deg, #ff9800, #ff5722); }
-    .load-bar     { background: linear-gradient(90deg, #9c27b0, #e91e63); }
-
-    .bar-value {
-        font-size: 1rem;
-        font-weight: 700;
-        color: #fff;
-        text-align: right;
+    @@media (min-width: 641px) and (max-width: 900px) {
+        .grid { grid-template-columns: 1fr 1fr; }
+        .side-panel {
+            grid-column: 1 / -1;
+            border-left: none;
+            border-top: 1px solid var(--border);
+            flex-direction: row;
+        }
+        .side-row { flex: 1; border-right: 1px solid var(--border); }
+        .side-row:last-child { border-right: none; }
+        .sep { display: none; }
     }
 </style>
 
 @code {
     private HubConnection? _hubConnection;
 
-    private int    Rpm        = 0;
-    private int    Speed      = 0;
-    private double Throttle   = 0;
-    private double EngineLoad = 0;
+    private int    Rpm         = 0;
+    private int    Speed       = 0;
+    private double Throttle    = 0;
+    private double EngineLoad  = 0;
     private double CoolantTemp = 0;
+    private bool   DtcPresent  = false;
+    private List<string> DtcCodes = new();
 
-    private bool IsConnected => _hubConnection?.State == HubConnectionState.Connected;
+    private int MaxRpm   = 0;
+    private int MaxSpeed = 0;
 
-    // RPM max = 8000 ; circonférence = 2π×50 ≈ 314
-    private double RpmArc       => Math.Min(Rpm / 8000.0, 1.0) * 314;
-    private double RpmRedArc    => Math.Max(0, Math.Min(Rpm / 8000.0, 1.0) - 0.75) * 314;
-    private double RpmRedOffset => 0.75 * 314;
+    private readonly List<int> RpmHistory   = new();
+    private readonly List<int> SpeedHistory = new();
+    private const int MaxHistory = 30;
 
-    // Vitesse max = 220 km/h
-    private double SpeedArc => Math.Min(Speed / 220.0, 1.0) * 314;
+    private bool IsConnected        => _hubConnection?.State == HubConnectionState.Connected;
+    private bool IsShiftLightActive => Rpm >= 5500;
 
-    // Coolant : 40–120°C → 0–100%
-    private double CoolantArc => Math.Clamp((CoolantTemp - 40) / 80.0, 0, 1) * 314;
+    private string RpmChartPoints   => HistoryToPoints(RpmHistory,   8000, 120, 24);
+    private string SpeedChartPoints => HistoryToPoints(SpeedHistory,  220, 120, 24);
+
+    private static string HistoryToPoints(List<int> history, double max, double w, double h)
+    {
+        if (history.Count < 2) return string.Empty;
+        double xStep = w / (history.Count - 1);
+        return string.Join(" ", history.Select((v, i) =>
+            $"{i * xStep:F1},{(1 - Math.Clamp(v / max, 0, 1)) * h:F1}"));
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        // Navigation.ToAbsoluteUri convertit "/telemetryHub" en "http://localhost:5000/telemetryHub" automatiquement
         var hubUrl = Navigation.ToAbsoluteUri("/telemetryHub").ToString();
 
         _hubConnection = new HubConnectionBuilder()
@@ -259,11 +390,39 @@
 
         _hubConnection.On<TelemetryPayload>("ReceiveTelemetry", payload =>
         {
-            Rpm         = payload.Metrics.EngineRpm         ?? Rpm;
-            Speed       = payload.Metrics.VehicleSpeed     ?? Speed;
-            Throttle    = payload.Metrics.ThrottlePosition ?? Throttle;
-            EngineLoad  = payload.Metrics.EngineLoad       ?? EngineLoad;
+            Rpm         = payload.Metrics.EngineRpm          ?? Rpm;
+            Speed       = payload.Metrics.VehicleSpeed       ?? Speed;
+            Throttle    = payload.Metrics.ThrottlePosition   ?? Throttle;
+            EngineLoad  = payload.Metrics.EngineLoad         ?? EngineLoad;
             CoolantTemp = payload.Metrics.CoolantTemperature ?? CoolantTemp;
+            DtcPresent  = payload.Diagnostics.DtcPresent;
+            DtcCodes    = payload.Diagnostics.DtcCodes;
+
+            // Gestion RPM
+            if (payload.Metrics.EngineRpm.HasValue)
+            {
+                var currentRpm = payload.Metrics.EngineRpm.Value;
+                
+                // Calcul du max basé sur la vraie valeur entrante
+                if (currentRpm > MaxRpm) MaxRpm = currentRpm;
+
+                // Ajout à la timeline du graphique
+                RpmHistory.Add(currentRpm);
+                if (RpmHistory.Count > MaxHistory) RpmHistory.RemoveAt(0);
+            }
+
+            // Gestion Vitesse
+            if (payload.Metrics.VehicleSpeed.HasValue)
+            {
+                var currentSpeed = payload.Metrics.VehicleSpeed.Value;
+
+                if (currentSpeed > MaxSpeed) MaxSpeed = currentSpeed;
+                
+                SpeedHistory.Add(currentSpeed);
+                if (SpeedHistory.Count > MaxHistory) SpeedHistory.RemoveAt(0);
+            }
+
+            // 4. Notification du pré-rendu Blazor pour rafraîchir l'UI à 10 Hz
             InvokeAsync(StateHasChanged);
         });
 
