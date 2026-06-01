@@ -1,0 +1,278 @@
+@page "/"
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+<PageTitle>AutoPi Dashboard</PageTitle>
+
+<div class="dashboard">
+    <header class="dashboard-header">
+        <h1>AutoPi Telemetry Dashboard</h1>
+        <span class="status @(IsConnected ? "connected" : "disconnected")">
+            @(IsConnected ? "Connecté" : "Déconnecté")
+        </span>
+    </header>
+
+    <div class="gauges-grid">
+
+        <!-- RPM Gauge -->
+        <div class="gauge-card">
+            <div class="circular-gauge rpm-gauge">
+                <svg viewBox="0 0 120 120" class="gauge-svg">
+                    <circle cx="60" cy="60" r="50" class="gauge-bg" />
+                    <circle cx="60" cy="60" r="50" class="gauge-track rpm-track"
+                            stroke-dasharray="@(RpmArc) 314"
+                            transform="rotate(-90 60 60)" />
+                    <circle cx="60" cy="60" r="50" class="gauge-redzone"
+                            stroke-dasharray="@(RpmRedArc) 314"
+                            stroke-dashoffset="@(-RpmRedOffset)"
+                            transform="rotate(-90 60 60)" />
+                </svg>
+                <div class="gauge-center">
+                    <span class="gauge-value">@Rpm</span>
+                    <span class="gauge-unit">tr/min</span>
+                </div>
+            </div>
+            <p class="gauge-label">RPM</p>
+        </div>
+
+        <!-- Vitesse Gauge -->
+        <div class="gauge-card">
+            <div class="circular-gauge speed-gauge">
+                <svg viewBox="0 0 120 120" class="gauge-svg">
+                    <circle cx="60" cy="60" r="50" class="gauge-bg" />
+                    <circle cx="60" cy="60" r="50" class="gauge-track speed-track"
+                            stroke-dasharray="@(SpeedArc) 314"
+                            transform="rotate(-90 60 60)" />
+                </svg>
+                <div class="gauge-center">
+                    <span class="gauge-value">@Speed</span>
+                    <span class="gauge-unit">km/h</span>
+                </div>
+            </div>
+            <p class="gauge-label">Vitesse</p>
+        </div>
+
+        <!-- Température Coolant -->
+        <div class="gauge-card">
+            <div class="circular-gauge coolant-gauge">
+                <svg viewBox="0 0 120 120" class="gauge-svg">
+                    <circle cx="60" cy="60" r="50" class="gauge-bg" />
+                    <circle cx="60" cy="60" r="50" class="gauge-track @(CoolantTemp > 100 ? "coolant-hot" : "coolant-track")"
+                            stroke-dasharray="@(CoolantArc) 314"
+                            transform="rotate(-90 60 60)" />
+                </svg>
+                <div class="gauge-center">
+                    <span class="gauge-value">@CoolantTemp</span>
+                    <span class="gauge-unit">°C</span>
+                </div>
+            </div>
+            <p class="gauge-label">Température Liquide</p>
+        </div>
+
+        <!-- Throttle Bar -->
+        <div class="gauge-card bar-card">
+            <p class="gauge-label">Throttle</p>
+            <div class="bar-container">
+                <div class="bar-fill throttle-bar" style="width: @(Throttle)%"></div>
+            </div>
+            <span class="bar-value">@Throttle.ToString("F1")%</span>
+        </div>
+
+        <!-- Engine Load Bar -->
+        <div class="gauge-card bar-card">
+            <p class="gauge-label">Charge Moteur</p>
+            <div class="bar-container">
+                <div class="bar-fill load-bar" style="width: @(EngineLoad)%"></div>
+            </div>
+            <span class="bar-value">@EngineLoad.ToString("F1")%</span>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    .dashboard {
+        min-height: 100vh;
+        background: #0d0d0d;
+        color: #e0e0e0;
+        font-family: 'Segoe UI', sans-serif;
+        padding: 24px;
+    }
+
+    .dashboard-header {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .dashboard-header h1 {
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: #ffffff;
+    }
+
+    .status {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .status.connected { background: #1a4a1a; color: #4caf50; border: 1px solid #4caf50; }
+    .status.disconnected { background: #4a1a1a; color: #f44336; border: 1px solid #f44336; }
+
+    .gauges-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 24px;
+        max-width: 1000px;
+    }
+
+    .gauge-card {
+        background: #1a1a1a;
+        border: 1px solid #2a2a2a;
+        border-radius: 12px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .circular-gauge {
+        position: relative;
+        width: 140px;
+        height: 140px;
+    }
+
+    .gauge-svg {
+        width: 100%;
+        height: 100%;
+        transform: scaleY(-1);
+    }
+
+    .gauge-bg { fill: none; stroke: #2a2a2a; stroke-width: 10; }
+
+    .gauge-track { fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dasharray 0.2s ease; }
+
+    .rpm-track   { stroke: #ff6b35; }
+    .speed-track { stroke: #2196f3; }
+    .coolant-track { stroke: #4caf50; }
+    .coolant-hot   { stroke: #f44336; }
+    .gauge-redzone { fill: none; stroke: #7b0000; stroke-width: 10; }
+
+    .gauge-center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+
+    .gauge-value {
+        display: block;
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #ffffff;
+        line-height: 1;
+    }
+
+    .gauge-unit {
+        font-size: 0.7rem;
+        color: #888;
+        letter-spacing: 0.05em;
+    }
+
+    .gauge-label {
+        font-size: 0.85rem;
+        color: #aaa;
+        text-align: center;
+        font-weight: 500;
+    }
+
+    .bar-card {
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .bar-card .gauge-label { text-align: left; color: #ccc; font-size: 0.9rem; }
+
+    .bar-container {
+        background: #2a2a2a;
+        border-radius: 6px;
+        height: 28px;
+        overflow: hidden;
+    }
+
+    .bar-fill {
+        height: 100%;
+        border-radius: 6px;
+        transition: width 0.2s ease;
+        min-width: 0;
+    }
+
+    .throttle-bar { background: linear-gradient(90deg, #ff9800, #ff5722); }
+    .load-bar     { background: linear-gradient(90deg, #9c27b0, #e91e63); }
+
+    .bar-value {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #fff;
+        text-align: right;
+    }
+</style>
+
+@code {
+    private HubConnection? _hubConnection;
+
+    private int    Rpm        = 0;
+    private int    Speed      = 0;
+    private double Throttle   = 0;
+    private double EngineLoad = 0;
+    private double CoolantTemp = 0;
+
+    private bool IsConnected => _hubConnection?.State == HubConnectionState.Connected;
+
+    // RPM max = 8000 ; circonférence = 2π×50 ≈ 314
+    private double RpmArc       => Math.Min(Rpm / 8000.0, 1.0) * 314;
+    private double RpmRedArc    => Math.Max(0, Math.Min(Rpm / 8000.0, 1.0) - 0.75) * 314;
+    private double RpmRedOffset => 0.75 * 314;
+
+    // Vitesse max = 220 km/h
+    private double SpeedArc => Math.Min(Speed / 220.0, 1.0) * 314;
+
+    // Coolant : 40–120°C → 0–100%
+    private double CoolantArc => Math.Clamp((CoolantTemp - 40) / 80.0, 0, 1) * 314;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Navigation.ToAbsoluteUri convertit "/telemetryHub" en "http://localhost:5000/telemetryHub" automatiquement
+        var hubUrl = Navigation.ToAbsoluteUri("/telemetryHub").ToString();
+
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(hubUrl)
+            .WithAutomaticReconnect()
+            .Build();
+
+        _hubConnection.On<TelemetryPayload>("ReceiveTelemetry", payload =>
+        {
+            Rpm         = payload.Metrics.EngineRpm         ?? Rpm;
+            Speed       = payload.Metrics.VehicleSpeed     ?? Speed;
+            Throttle    = payload.Metrics.ThrottlePosition ?? Throttle;
+            EngineLoad  = payload.Metrics.EngineLoad       ?? EngineLoad;
+            CoolantTemp = payload.Metrics.CoolantTemperature ?? CoolantTemp;
+            InvokeAsync(StateHasChanged);
+        });
+
+        await _hubConnection.StartAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_hubConnection is not null)
+            await _hubConnection.DisposeAsync();
+    }
+}
