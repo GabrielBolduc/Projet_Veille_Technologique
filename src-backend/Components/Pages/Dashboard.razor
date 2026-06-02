@@ -58,7 +58,7 @@
             </div>
         </section>
 
-        <!-- Panneau secondaire -->
+        <!-- Side Panel -->
         <aside class="side-panel">
 
             <div class="side-row">
@@ -125,7 +125,6 @@
 
     body { background: var(--bg); }
 
-    /* DTC */
     .dtc-bar {
         display: flex;
         align-items: center;
@@ -140,7 +139,6 @@
     .dtc-label { color: var(--crit); font-weight: 700; letter-spacing: 0.18em; }
     .dtc-codes { color: #a06060; }
 
-    /* Shell */
     .shell {
         min-height: 100vh;
         background: var(--bg);
@@ -148,7 +146,6 @@
         font-family: var(--fn);
     }
 
-    /* Header */
     .hdr {
         display: flex;
         align-items: center;
@@ -173,14 +170,12 @@
     .hdr-status.on  { color: #3fc77a; background: #081408; border: 1px solid #1c3a22; }
     .hdr-status.off { color: var(--crit); background: #140808; border: 1px solid #3a1414; }
 
-    /* Main grid — asymmetric 3 columns */
     .grid {
         display: grid;
         grid-template-columns: 1fr 1fr 210px;
         min-height: calc(100vh - 46px);
     }
 
-    /* Primary cells */
     .primary-cell {
         padding: 36px 28px 28px;
         border-right: 1px solid var(--border);
@@ -215,7 +210,6 @@
         margin-top: 5px;
     }
 
-    /* Sparkline */
     .sparkline {
         width: 100%;
         height: 24px;
@@ -255,7 +249,6 @@
         margin-left: 2px;
     }
 
-    /* Side panel */
     .side-panel {
         background: var(--card);
         border-left: 1px solid var(--border);
@@ -298,7 +291,6 @@
         font-family: var(--fn);
     }
 
-    /* Thin progress bar — 3 px, no gradient */
     .bar-track {
         height: 3px;
         background: var(--border);
@@ -313,7 +305,6 @@
     }
     .bar-fill.bar-crit { background: var(--crit); }
 
-    /* Mobile */
     @@media (max-width: 640px) {
         .grid {
             grid-template-columns: 1fr;
@@ -417,12 +408,11 @@
                 var currentSpeed = payload.Metrics.VehicleSpeed.Value;
 
                 if (currentSpeed > MaxSpeed) MaxSpeed = currentSpeed;
-                
+
                 SpeedHistory.Add(currentSpeed);
                 if (SpeedHistory.Count > MaxHistory) SpeedHistory.RemoveAt(0);
             }
 
-            // 4. Notification du pré-rendu Blazor pour rafraîchir l'UI à 10 Hz
             InvokeAsync(StateHasChanged);
         });
 

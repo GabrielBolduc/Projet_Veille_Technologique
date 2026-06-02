@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 import requests
 
 SIMULATION = True # Mode Simulation 
-API_URL = "http://localhost:5000/api/telemetry"
+API_URL = "http://127.0.0.1:5000/api/telemetry"
 PORT = "COM3"
 HIGH_FREQ_INTERVAL = 0.1  # 10 Hz
 LOW_FREQ_INTERVAL = 10.0  # 0.1 Hz
@@ -45,10 +45,10 @@ def query_high_freq(conn):
     global _sim_tick
     if SIMULATION:
         _sim_tick += 0.05
-        # Génère une courbe qui monte et descend proprement
+        # courbe 
         base_wave = (math.sin(_sim_tick) + 1) / 2  # Entre 0 et 1
 
-        # On fait monter le RPM jusqu'à 6200 pour faire flasher ta Shift Light (seuil à 5500)
+        # monter les rpm pour simuler une accélération progressive
         rpm = 800 + (base_wave * 5400) + random.randint(-50, 50)
         # La vitesse suit logiquement le régime
         speed = base_wave * 130 + random.randint(-1, 1)
@@ -89,9 +89,9 @@ def build_payload(high_data, low_data):
     # Décommente les lignes ci-dessous si tu veux voir la bannière "Check Engine" s'allumer !
     dtc_present = False
     dtc_codes = []
-    if random.random() > 0.85:
-         dtc_present = True
-         dtc_codes = ["P0300", "P0101"]
+    # if random.random() > 0.85:
+    #     dtc_present = True
+    #     dtc_codes = ["P0300", "P0101"]
 
     return {
         "device_id": "Volvo-S60-T5",
