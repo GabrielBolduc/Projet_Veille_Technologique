@@ -1,9 +1,28 @@
-﻿@page "/"
-@inject NavigationManager Navigation
+@page "/"
 @rendermode InteractiveServer
-@implements IAsyncDisposable
 
 <PageTitle>AutoPi Dashboard</PageTitle>
+
+<style>
+    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@300;400&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+        --bg:     #8c8c8f;
+        --card:   #8c8c8f;
+        --border: #1f1f23;
+        --txt:    #070707;
+        --muted:  #fa0404;
+        --dim:    #3a3a46;
+        --crit:   #ff3333;
+        --accent: #4a7fa5;
+        --fn:     'Inter', system-ui, sans-serif;
+
+    }
+
+    body { background: var(--bg); }
+</style>
 
 @if (DtcPresent)
 {
@@ -17,411 +36,244 @@
 
     <header class="hdr">
         <span class="hdr-title">AutoPi Telemetry</span>
-        <span class="hdr-status @(IsConnected ? "on" : "off")">
-            @(IsConnected ? "LIVE" : "OFFLINE")
-        </span>
+
+        <div class="tabs">
+            <button class="tab @(_activeTab == "live" ? "tab-active" : "")"
+                    @onclick='() => SwitchTabAsync("live")'>
+                DIRECT
+            </button>
+            <button class="tab @(_activeTab == "history" ? "tab-active" : "")"
+                    @onclick='() => SwitchTabAsync("history")'>
+                HISTORIQUE
+            </button>
+        </div>
+
     </header>
 
-    <main class="grid">
+    @if (_activeTab == "live")
+    {
+        <main class="grid">
 
-        <!-- Vitesse -->
-        <section class="primary-cell">
-            <span class="metric-label">VITESSE</span>
-            <span class="metric-value @(Speed > 200 ? "crit" : "")">@Speed</span>
-            <span class="metric-unit">km / h</span>
-            <svg class="sparkline" viewBox="0 0 120 24" preserveAspectRatio="none">
-                @if (SpeedHistory.Count > 1)
-                {
-                    <polyline points="@SpeedChartPoints" class="spark-line" />
-                }
-            </svg>
-            <div class="metric-sub">
-                <span class="sub-label">MAX SESSION</span>
-                <span class="sub-value">@MaxSpeed <span class="sub-unit">km/h</span></span>
-            </div>
-        </section>
-
-        <!-- RPM -->
-        <section class="primary-cell">
-            <span class="metric-label">RPM</span>
-            <span class="metric-value @(IsShiftLightActive ? "crit" : "")">@Rpm.ToString("N0")</span>
-            <span class="metric-unit">tr / min</span>
-            <svg class="sparkline" viewBox="0 0 120 24" preserveAspectRatio="none">
-                @if (RpmHistory.Count > 1)
-                {
-                    <polyline points="@RpmChartPoints" class="spark-line" />
-                }
-            </svg>
-            <div class="metric-sub">
-                <span class="sub-label">MAX SESSION</span>
-                <span class="sub-value">@MaxRpm.ToString("N0")</span>
-            </div>
-        </section>
-
-        <!-- Side Panel -->
-        <aside class="side-panel">
-
-            <div class="side-row">
-                <span class="side-label">THROTTLE</span>
-                <div class="side-data">
-                    <span class="side-value">@Throttle.ToString("F1")<span class="side-unit">%</span></span>
+            <!-- Vitesse -->
+            <section class="primary-cell">
+                <span class="metric-label">VITESSE</span>
+                <span class="metric-value @(Speed > 200 ? "crit" : "")">@Speed</span>
+                <span class="metric-unit">km / h</span>
+                <svg class="sparkline" viewBox="0 0 120 24" preserveAspectRatio="none">
+                    @if (SpeedHistory.Count > 1)
+                    {
+                        <polyline points="@SpeedChartPoints" class="spark-line" />
+                    }
+                </svg>
+                <div class="metric-sub">
+                    <span class="sub-label">MAX SESSION</span>
+                    <span class="sub-value">@MaxSpeed <span class="sub-unit">km/h</span></span>
                 </div>
-                <div class="bar-track">
-                    <div class="bar-fill" style="width:@(Throttle.ToString("F0"))%"></div>
-                </div>
-            </div>
+            </section>
 
-            <div class="sep"></div>
-
-            <div class="side-row">
-                <span class="side-label">CHARGE MOTEUR</span>
-                <div class="side-data">
-                    <span class="side-value">@EngineLoad.ToString("F1")<span class="side-unit">%</span></span>
+            <!-- RPM -->
+            <section class="primary-cell">
+                <span class="metric-label">RPM</span>
+                <span class="metric-value @(IsShiftLightActive ? "crit" : "")">@Rpm.ToString("N0")</span>
+                <span class="metric-unit">tr / min</span>
+                <svg class="sparkline" viewBox="0 0 120 24" preserveAspectRatio="none">
+                    @if (RpmHistory.Count > 1)
+                    {
+                        <polyline points="@RpmChartPoints" class="spark-line" />
+                    }
+                </svg>
+                <div class="metric-sub">
+                    <span class="sub-label">MAX SESSION</span>
+                    <span class="sub-value">@MaxRpm.ToString("N0")</span>
                 </div>
-                <div class="bar-track">
-                    <div class="bar-fill" style="width:@(EngineLoad.ToString("F0"))%"></div>
-                </div>
-            </div>
+            </section>
 
-            <div class="sep"></div>
+            <!-- Side Panel -->
+            <aside class="side-panel">
 
-            <div class="side-row">
-                <span class="side-label">TEMP. LIQUIDE</span>
-                <div class="side-data">
-                    <span class="side-value @(CoolantTemp > 105 ? "crit" : "")">
-                        @((int)CoolantTemp)<span class="side-unit">°C</span>
-                    </span>
-                </div>
-                <div class="bar-track">
-                    <div class="bar-fill @(CoolantTemp > 105 ? "bar-crit" : "")"
-                         style="width:@(Math.Clamp((CoolantTemp - 40) / 80.0 * 100, 0, 100).ToString("F0"))%">
+                <div class="side-row">
+                    <span class="side-label">THROTTLE</span>
+                    <div class="side-data">
+                        <span class="side-value">@Throttle.ToString("F1")<span class="side-unit">%</span></span>
+                    </div>
+                    <div class="bar-track">
+                        <div class="bar-fill" style="width:@(Throttle.ToString("F0"))%"></div>
                     </div>
                 </div>
+
+                <div class="sep"></div>
+
+                <div class="side-row">
+                    <span class="side-label">CHARGE MOTEUR</span>
+                    <div class="side-data">
+                        <span class="side-value">@EngineLoad.ToString("F1")<span class="side-unit">%</span></span>
+                    </div>
+                    <div class="bar-track">
+                        <div class="bar-fill" style="width:@(EngineLoad.ToString("F0"))%"></div>
+                    </div>
+                </div>
+
+                <div class="sep"></div>
+
+                <div class="side-row">
+                    <span class="side-label">TEMP. LIQUIDE</span>
+                    <div class="side-data">
+                        <span class="side-value @(CoolantTemp > 105 ? "crit" : "")">
+                            @((int)CoolantTemp)<span class="side-unit">°C</span>
+                        </span>
+                    </div>
+                    <div class="bar-track">
+                        <div class="bar-fill @(CoolantTemp > 105 ? "bar-crit" : "")"
+                             style="width:@(Math.Clamp((CoolantTemp - 40) / 80.0 * 100, 0, 100).ToString("F0"))%">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sep"></div>
+
+                <div class="side-row track-row">
+                    <button class="track-btn track-start"
+                            @onclick="OpenStartModal"
+                            disabled="@Processor.IsTrackingActive">
+                        DÉMARRER UN TRAJET
+                    </button>
+                </div>
+
+            </aside>
+
+        </main>
+    }
+
+    @if (_activeTab == "history")
+    {
+        <div class="history-panel">
+            <div class="hist-toolbar">
+                <span class="hist-count">
+                    @(_sessions.Count) trajet@(_sessions.Count > 1 ? "s" : "") enregistré@(_sessions.Count > 1 ? "s" : "")
+                </span>
+                <button class="hist-refresh" @onclick="LoadHistoryAsync" disabled="@_loadingHistory">
+                    @(_loadingHistory ? "Chargement…" : "Actualiser")
+                </button>
             </div>
 
-        </aside>
-
-    </main>
+            @if (_loadingHistory)
+            {
+                <p class="hist-msg">Chargement...</p>
+            }
+            else if (_sessions.Count == 0)
+            {
+                <p class="hist-msg">Aucun trajet enregistré pour le moment...</p>
+            }
+            else
+            {
+                <table class="hist-table">
+                    <thead>
+                        <tr>
+                            <th>Trajet</th>
+                            <th>Véhicule</th>
+                            <th>Début</th>
+                            <th>Fin</th>
+                            <th>Durée</th>
+                            <th>RPM Max</th>
+                            <th>Vit. Max</th>
+                            <th>Enreg.</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var s in _sessions)
+                        {
+                            <tr>
+                                <td style="font-family: var(--fn); font-size: 0.85rem; font-weight: 600;">
+                                    @(string.IsNullOrWhiteSpace(s.Title) ? $"Trajet #{s.Id}" : s.Title)
+                                </td>
+                                <td class="muted">@s.DeviceId</td>
+                                <td class="mono">@s.StartTime.ToLocalTime().ToString("dd/MM/yy HH:mm")</td>
+                                <td class="mono @(s.EndTime is null ? "crit-txt" : "")">
+                                    @(s.EndTime.HasValue
+                                        ? s.EndTime.Value.ToLocalTime().ToString("dd/MM/yy HH:mm")
+                                        : "En cours")
+                                </td>
+                                <td class="mono muted">@s.Duration</td>
+                                <td class="mono @(s.MaxRpm >= 5500 ? "crit-txt" : "")">@s.MaxRpm.ToString("N0")</td>
+                                <td class="mono @(s.MaxSpeed > 200 ? "crit-txt" : "")">@s.MaxSpeed</td>
+                                <td class="mono muted">@s.RecordCount</td>
+                                <td class="action-cell">
+                                    @if (s.EndTime is null && Processor.IsTrackingActive)
+                                    {
+                                        <button class="btn-stop" @onclick="OpenStopModal" title="Terminer et archiver">TERMINER</button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn-resume"
+                                                @onclick="() => ResumeSessionAsync(s.Id)"
+                                                disabled="@Processor.IsTrackingActive"
+                                                title="Reprendre ce trajet">Reprendre</button>
+                                        <button class="btn-delete" @onclick="() => OpenDeleteModal(s.Id, s.Title)" title="Supprimer">Supprimer</button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    }
 
 </div>
 
-<style>
-    @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Roboto+Mono:wght@300;400&display=swap');
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-        --bg:      #8c8c8f;
-        --card:    #8c8c8f;
-        --border:  #1f1f23;
-        --txt:     #070707;
-        --muted:   #fa0404;
-        --dim:     #3a3a46;
-        --crit:    #ff3333;
-        --accent:  #4a7fa5;
-        --fn:      'Inter', system-ui, sans-serif;
-        --fm:      'Roboto Mono', 'SF Mono', 'Courier New', monospace;
-    }
-
-    body { background: var(--bg); }
-
-    .dtc-bar {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        padding: 7px 20px;
-        background: #100404;
-        border-bottom: 1px solid #2a0808;
-        font-family: var(--fn);
-        font-size: 0.72rem;
-        letter-spacing: 0.06em;
-    }
-    .dtc-label { color: var(--crit); font-weight: 700; letter-spacing: 0.18em; }
-    .dtc-codes { color: #a06060; }
-
-    .shell {
-        min-height: 100vh;
-        background: var(--bg);
-        color: var(--txt);
-        font-family: var(--fn);
-    }
-
-    .hdr {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 13px 20px;
-        border-bottom: 1px solid var(--border);
-    }
-    .hdr-title {
-        font-size: 0.78rem;
-        font-weight: 600;
-        color: var(--muted);
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-    }
-    .hdr-status {
-        font-size: 0.68rem;
-        font-weight: 700;
-        letter-spacing: 0.18em;
-        padding: 3px 10px;
-        border-radius: 2px;
-    }
-    .hdr-status.on  { color: #3fc77a; background: #081408; border: 1px solid #1c3a22; }
-    .hdr-status.off { color: var(--crit); background: #140808; border: 1px solid #3a1414; }
-
-    .grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr 210px;
-        min-height: calc(100vh - 46px);
-    }
-
-    .primary-cell {
-        padding: 36px 28px 28px;
-        border-right: 1px solid var(--border);
-        display: flex;
-        flex-direction: column;
-    }
-
-    .metric-label {
-        font-size: 0.62rem;
-        font-weight: 600;
-        color: var(--dim);
-        letter-spacing: 0.22em;
-        text-transform: uppercase;
-    }
-
-    .metric-value {
-        font-family: var(--fm);
-        font-size: 5rem;
-        font-weight: 300;
-        color: var(--txt);
-        line-height: 1;
-        letter-spacing: -0.03em;
-        margin-top: 8px;
-        transition: color 0.4s;
-    }
-    .metric-value.crit { color: var(--crit); }
-
-    .metric-unit {
-        font-size: 0.68rem;
-        color: var(--dim);
-        letter-spacing: 0.12em;
-        margin-top: 5px;
-    }
-
-    .sparkline {
-        width: 100%;
-        height: 24px;
-        display: block;
-        margin-top: 16px;
-    }
-    .spark-line {
-        fill: none;
-        stroke: var(--accent);
-        stroke-width: 1;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-    }
-
-    /* Session max */
-    .metric-sub {
-        display: flex;
-        align-items: baseline;
-        gap: 10px;
-        margin-top: 12px;
-    }
-    .sub-label {
-        font-size: 0.58rem;
-        font-weight: 600;
-        color: #2e2e38;
-        letter-spacing: 0.18em;
-    }
-    .sub-value {
-        font-family: var(--fm);
-        font-size: 0.88rem;
-        font-weight: 400;
-        color: var(--muted);
-    }
-    .sub-unit {
-        font-size: 0.65rem;
-        color: var(--dim);
-        margin-left: 2px;
-    }
-
-    .side-panel {
-        background: var(--card);
-        border-left: 1px solid var(--border);
-        display: flex;
-        flex-direction: column;
-    }
-
-    .side-row {
-        padding: 20px 18px;
-        display: flex;
-        flex-direction: column;
-        gap: 7px;
-    }
-
-    .sep { height: 1px; background: var(--border); flex-shrink: 0; }
-
-    .side-label {
-        font-size: 0.59rem;
-        font-weight: 600;
-        color: #2e2e38;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-    }
-
-    .side-data { display: flex; align-items: baseline; }
-
-    .side-value {
-        font-family: var(--fm);
-        font-size: 1.6rem;
-        font-weight: 300;
-        color: var(--txt);
-        transition: color 0.4s;
-    }
-    .side-value.crit { color: var(--crit); }
-
-    .side-unit {
-        font-size: 0.65rem;
-        color: var(--dim);
-        margin-left: 3px;
-        font-family: var(--fn);
-    }
-
-    .bar-track {
-        height: 3px;
-        background: var(--border);
-        border-radius: 2px;
-        overflow: hidden;
-    }
-    .bar-fill {
-        height: 100%;
-        background: var(--dim);
-        border-radius: 2px;
-        transition: width 0.25s ease;
-    }
-    .bar-fill.bar-crit { background: var(--crit); }
-
-    @@media (max-width: 640px) {
-        .grid {
-            grid-template-columns: 1fr;
-            min-height: unset;
-        }
-        .primary-cell {
-            border-right: none;
-            border-bottom: 1px solid var(--border);
-            padding: 24px 18px 20px;
-        }
-        .metric-value { font-size: 3.8rem; }
-        .side-panel {
-            border-left: none;
-            border-top: 1px solid var(--border);
-        }
-        .side-row { padding: 16px 18px; }
-        .side-value { font-size: 1.4rem; }
-    }
-
-    @@media (min-width: 641px) and (max-width: 900px) {
-        .grid { grid-template-columns: 1fr 1fr; }
-        .side-panel {
-            grid-column: 1 / -1;
-            border-left: none;
-            border-top: 1px solid var(--border);
-            flex-direction: row;
-        }
-        .side-row { flex: 1; border-right: 1px solid var(--border); }
-        .side-row:last-child { border-right: none; }
-        .sep { display: none; }
-    }
-</style>
-
-@code {
-    private HubConnection? _hubConnection;
-
-    private int    Rpm         = 0;
-    private int    Speed       = 0;
-    private double Throttle    = 0;
-    private double EngineLoad  = 0;
-    private double CoolantTemp = 0;
-    private bool   DtcPresent  = false;
-    private List<string> DtcCodes = new();
-
-    private int MaxRpm   = 0;
-    private int MaxSpeed = 0;
-
-    private readonly List<int> RpmHistory   = new();
-    private readonly List<int> SpeedHistory = new();
-    private const int MaxHistory = 30;
-
-    private bool IsConnected        => _hubConnection?.State == HubConnectionState.Connected;
-    private bool IsShiftLightActive => Rpm >= 5500;
-
-    private string RpmChartPoints   => HistoryToPoints(RpmHistory,   8000, 120, 24);
-    private string SpeedChartPoints => HistoryToPoints(SpeedHistory,  220, 120, 24);
-
-    private static string HistoryToPoints(List<int> history, double max, double w, double h)
-    {
-        if (history.Count < 2) return string.Empty;
-        double xStep = w / (history.Count - 1);
-        return string.Join(" ", history.Select((v, i) =>
-            $"{i * xStep:F1},{(1 - Math.Clamp(v / max, 0, 1)) * h:F1}"));
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        var hubUrl = Navigation.ToAbsoluteUri("/telemetryHub").ToString();
-
-        _hubConnection = new HubConnectionBuilder()
-            .WithUrl(hubUrl)
-            .WithAutomaticReconnect()
-            .Build();
-
-        _hubConnection.On<TelemetryPayload>("ReceiveTelemetry", payload =>
-        {
-            Rpm         = payload.Metrics.EngineRpm          ?? Rpm;
-            Speed       = payload.Metrics.VehicleSpeed       ?? Speed;
-            Throttle    = payload.Metrics.ThrottlePosition   ?? Throttle;
-            EngineLoad  = payload.Metrics.EngineLoad         ?? EngineLoad;
-            CoolantTemp = payload.Metrics.CoolantTemperature ?? CoolantTemp;
-            DtcPresent  = payload.Diagnostics.DtcPresent;
-            DtcCodes    = payload.Diagnostics.DtcCodes;
-
-            // Gestion RPM
-            if (payload.Metrics.EngineRpm.HasValue)
+@if (_showStartModal)
+{
+    <div class="modal-overlay" @onclick="CloseStartModal">
+        <div class="modal-box" @onclick:stopPropagation="true">
+            <span class="modal-title">NOM DU TRAJET</span>
+            <input class="modal-input"
+                   type="text"
+                   placeholder="Ex : Trajet domicile -> travail"
+                   maxlength="80"
+                   @bind="_newTripTitle"
+                   @bind:event="oninput"
+                   @onkeydown="OnStartModalKeyDown"
+                   autofocus />
+            @if (_startModalError)
             {
-                var currentRpm = payload.Metrics.EngineRpm.Value;
-                
-                // Calcul du max basé sur la vraie valeur entrante
-                if (currentRpm > MaxRpm) MaxRpm = currentRpm;
-
-                // Ajout à la timeline du graphique
-                RpmHistory.Add(currentRpm);
-                if (RpmHistory.Count > MaxHistory) RpmHistory.RemoveAt(0);
+                <span class="modal-error">Le nom du trajet est obligatoire.</span>
             }
+            <div class="modal-actions">
+                <button class="modal-btn modal-cancel" @onclick="CloseStartModal">Annuler</button>
+                <button class="modal-btn modal-confirm" @onclick="ConfirmStartTrackingAsync">Commencer</button>
+            </div>
+        </div>
+    </div>
+}
 
-            // Gestion Vitesse
-            if (payload.Metrics.VehicleSpeed.HasValue)
-            {
-                var currentSpeed = payload.Metrics.VehicleSpeed.Value;
+@if (_showStopModal)
+{
+    <div class="modal-overlay" @onclick="CloseStopModal">
+        <div class="modal-box" @onclick:stopPropagation="true">
+            <span class="modal-title">TERMINER LE TRAJET</span>
+            <p class="modal-warn">Voulez-vous terminer le trajet en cours ?</p>
+            <div class="modal-actions">
+                <button class="modal-btn modal-cancel" @onclick="CloseStopModal">Annuler</button>
+                <button class="modal-btn modal-stop-confirm" @onclick="ConfirmStopAsync">Terminer</button>
+            </div>
+        </div>
+    </div>
+}
 
-                if (currentSpeed > MaxSpeed) MaxSpeed = currentSpeed;
-
-                SpeedHistory.Add(currentSpeed);
-                if (SpeedHistory.Count > MaxHistory) SpeedHistory.RemoveAt(0);
-            }
-
-            InvokeAsync(StateHasChanged);
-        });
-
-        await _hubConnection.StartAsync();
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        if (_hubConnection is not null)
-            await _hubConnection.DisposeAsync();
-    }
+@if (_showDeleteModal)
+{
+    <div class="modal-overlay" @onclick="CloseDeleteModal">
+        <div class="modal-box" @onclick:stopPropagation="true">
+            <span class="modal-title">SUPPRIMER LE TRAJET</span>
+            <p class="modal-warn">
+                Voulez-vous supprimer <strong>@(_deleteTargetTitle is { Length: > 0 } t ? t : $"Trajet #{_deleteTargetId}")</strong> ?
+                Cette action est irréversible.
+            </p>
+            <div class="modal-actions">
+                <button class="modal-btn modal-cancel" @onclick="CloseDeleteModal">Annuler</button>
+                <button class="modal-btn modal-delete" @onclick="ConfirmDeleteAsync">Supprimer</button>
+            </div>
+        </div>
+    </div>
 }

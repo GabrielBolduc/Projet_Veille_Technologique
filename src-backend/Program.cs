@@ -26,12 +26,16 @@ builder.Services.AddSingleton(new DbChannelReader(dbChannel.Reader));
 builder.Services.AddHostedService<TelemetryProcessor>();
 
 // Configuration de la base de données SQLite avec EF Core
+// AddDbContextFactory enregistre la factory (singleton) ET le DbContext (scoped),
+// ce qui permet l'injection de IDbContextFactory<> dans les composants Blazor.
 var dbPath = Path.Combine(builder.Environment.ContentRootPath, "autopi.db");
-builder.Services.AddDbContext<TelemetryDbContext>(options =>
+builder.Services.AddDbContextFactory<TelemetryDbContext>(options =>
     options.UseSqlite($"Data Source={dbPath}"));
 
 builder.Services.AddSingleton<SessionStats>();
-builder.Services.AddHostedService<DatabaseProcessor>();
+// Singleton explicite pour permettre l'injection de DatabaseProcessor dans les composants Blazor.
+builder.Services.AddSingleton<DatabaseProcessor>();
+builder.Services.AddHostedService(sp => sp.GetRequiredService<DatabaseProcessor>());
 
 builder.Services.AddSignalR();
 
@@ -50,6 +54,14 @@ try
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<TelemetryDbContext>();
     await db.Database.EnsureCreatedAsync();
+    // Migration légère : ajoute Title si la colonne n'existe pas encore dans une DB existante.
+    try
+    {
+        await db.Database.ExecuteSqlRawAsync(
+            "ALTER TABLE Sessions ADD COLUMN Title TEXT NOT NULL DEFAULT ''");
+        app.Logger.LogInformation("[DB] Colonne Title ajoutée à Sessions.");
+    }
+    catch { /* colonne déjà présente */ }
     app.Logger.LogInformation("[DB] autopi.db initialisée : {Path}", dbPath);
 }
 catch (Exception ex)

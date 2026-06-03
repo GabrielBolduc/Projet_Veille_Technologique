@@ -5,6 +5,7 @@ namespace AutoPi.TelemetryApi;
 public class TripSession
 {
     public int       Id        { get; set; }
+    public string Title { get; set; } = "";
     public string    DeviceId  { get; set; } = "";
     public DateTime  StartTime { get; set; }
     public DateTime? EndTime   { get; set; }
@@ -17,7 +18,6 @@ public class TelemetryRecord
     public long     Id            { get; set; }
     public int      TripSessionId { get; set; }
     public DateTime ReceivedAt    { get; set; }
-
     public string  DeviceId           { get; set; } = "";
     public string  Timestamp          { get; set; } = "";
     public int?    EngineRpm          { get; set; }
