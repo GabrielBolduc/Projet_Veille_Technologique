@@ -19,9 +19,8 @@ public class DatabaseProcessor(
 
     public bool IsTrackingActive => _isTrackingActive;
 
-    // ── API publique appelée depuis Blazor ─────────────────────────────────
 
-    /// Démarre le suivi avec le nom de trajet choisi par l'utilisateur.
+    // Démarre le suivi avec le nom de trajet choisi par l'utilisateur.
     public async Task StartTrackingAsync(string title)
     {
         if (_isTrackingActive) return;
@@ -46,7 +45,7 @@ public class DatabaseProcessor(
         logger.LogInformation("[DB] Suivi démarré : {Title}.", title);
     }
 
-    /// Clôture la session courante avec EndTime et arrête le suivi.
+    // Clôture la session courante avec EndTime et arrête le suivi.
     public async Task CloseCurrentSessionAsync()
     {
         if (!_isTrackingActive) return;
@@ -70,7 +69,7 @@ public class DatabaseProcessor(
         }
     }
 
-    /// Reprend une session archivée : efface EndTime et réactive le suivi.
+    // Reprend une session archivée : efface EndTime et réactive le suivi.
     public async Task ResumeSessionAsync(int id)
     {
         if (_isTrackingActive) return;
@@ -89,7 +88,7 @@ public class DatabaseProcessor(
         logger.LogInformation("[DB] Session {Id} reprise : {Title}.", id, session.Title);
     }
 
-    /// Supprime un trajet et tous ses enregistrements (cascade).
+    // Supprime un trajet et tous ses enregistrements (cascade).
     public async Task DeleteSessionAsync(int id)
     {
         if (_currentSessionId == id)
@@ -106,7 +105,6 @@ public class DatabaseProcessor(
         }
     }
 
-    // ── Boucle de traitement ───────────────────────────────────────────────
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -152,7 +150,12 @@ public class DatabaseProcessor(
         {
             using var scope = services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<TelemetryDbContext>();
-            var session = new TripSession { DeviceId = p.DeviceId, StartTime = DateTime.UtcNow, Title = _pendingTitle };
+            // Le titre choisi par l'utilisateur a la priorité ; sinon on tente la résolution par VIN.
+            string finalTitle = string.IsNullOrWhiteSpace(_pendingTitle)
+                ? VehiculeRegistry.ResolveName(p.DeviceId)
+                : _pendingTitle;
+
+            var session = new TripSession { DeviceId = p.DeviceId, StartTime = DateTime.UtcNow, Title = finalTitle };
             db.Sessions.Add(session);
             await db.SaveChangesAsync(ct);
             _currentSessionId = session.Id;

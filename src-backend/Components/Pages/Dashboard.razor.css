@@ -185,6 +185,7 @@
     color: #33333d;
     letter-spacing: 0.1em;
 }
+.hist-error { color: var(--crit); }
 
 .hist-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
 .hist-table th {
@@ -328,7 +329,8 @@
 .modal-confirm      { background: #1a4a28; border-color: #2a6a3a; color: #6fd98a; }
 .modal-delete       { background: #4a1a1a; border-color: #6a2a2a; color: #ff8080; }
 .modal-stop-confirm { background: rgba(0,0,0,0.12); border-color: rgba(0,0,0,0.40); color: var(--txt); }
-
+.hist-table td.mono { font-family: var(--fm); }
+.hist-table td.muted { color: #555566; font-size: 0.75rem; }
 /* Responsive */
 
 @media (max-width: 640px) {

@@ -70,9 +70,12 @@ public partial class Dashboard : IAsyncDisposable
             : "En cours";
     }
 
+    private string? _historyError;
+
     private async Task LoadHistoryAsync()
     {
         _loadingHistory = true;
+        _historyError   = null;
         StateHasChanged();
         try
         {
@@ -92,6 +95,10 @@ public partial class Dashboard : IAsyncDisposable
                 new SessionRow(x.Id, x.Title, x.DeviceId, x.StartTime, x.EndTime,
                                x.MaxRpm, x.MaxSpeed, x.RecordCount))
                 .ToList();
+        }
+        catch (Exception ex)
+        {
+            _historyError = ex.Message;
         }
         finally
         {
@@ -185,20 +192,26 @@ public partial class Dashboard : IAsyncDisposable
 
     private async Task RestoreSessionMaxAsync()
     {
-        await using var db = await DbFactory.CreateDbContextAsync();
-        var stats = await db.Sessions
-            .Where(s => s.EndTime == null)
-            .Select(s => new
-            {
-                MaxRpm   = s.Records.Max(r => (int?)r.EngineRpm)    ?? 0,
-                MaxSpeed = s.Records.Max(r => (int?)r.VehicleSpeed) ?? 0,
-            })
-            .FirstOrDefaultAsync();
-
-        if (stats is not null)
+        try
         {
-            MaxRpm   = stats.MaxRpm;
-            MaxSpeed = stats.MaxSpeed;
+            await using var db = await DbFactory.CreateDbContextAsync();
+            var active = await db.Sessions
+                .Where(s => s.EndTime == null)
+                .FirstOrDefaultAsync();
+
+            if (active is not null)
+            {
+                MaxRpm = await db.Records
+                    .Where(r => r.TripSessionId == active.Id)
+                    .MaxAsync(r => (int?)r.EngineRpm) ?? 0;
+                MaxSpeed = await db.Records
+                    .Where(r => r.TripSessionId == active.Id)
+                    .MaxAsync(r => (int?)r.VehicleSpeed) ?? 0;
+            }
+        }
+        catch
+        {
+            // Non bloquant : les max seront mis à jour dès le prochain payload SignalR
         }
     }
 

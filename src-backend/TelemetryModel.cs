@@ -13,6 +13,14 @@ public class TripSession
     public List<TelemetryRecord> Records { get; set; } = new();
 }
 
+public static class VehiculeRegistry
+{
+    public static string ResolveName(string deviceId)
+    {
+        return VehicleDictionary.ResolveVehicleName(deviceId);
+    }
+}
+
 public class TelemetryRecord
 {
     public long     Id            { get; set; }

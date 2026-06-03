@@ -4,7 +4,7 @@ import time
 from datetime import datetime, timezone
 import requests
 
-SIMULATION = False # Mode Simulation 
+SIMULATION = True # Mode Simulation 
 API_URL = "http://127.0.0.1:5000/api/telemetry"
 PORT = "COM3"
 HIGH_FREQ_INTERVAL = 0.1  # 10 Hz
@@ -20,20 +20,31 @@ def _val(response):
         return None
     return response.value.magnitude
 
-
+CURRENT_DEVICE_ID = "Volvo-S60-T5" 
 def connect():
+    global CURRENT_DEVICE_ID
     if SIMULATION:
         print("[INFO] [MODE SIMULATION] Connexion virtuelle établie.")
+        CURRENT_DEVICE_ID += "Simulateur"
         # On retourne un objet factice qui possède la méthode is_connected()
         class MockConn:
-
             def is_connected(self):
                 return True
-
         return MockConn()
 
     print(f"[INFO] Tentative de connexion à l'adaptateur sur {PORT}...")
     connection = obd.OBD(PORT)
+    if connection.is_connected():
+        print("Connecter a la voiture")
+        response = connection.query(obd.commands.VIN)
+        if response and not response.is_null():
+            raw_vin = str(response.value).strip()
+            if raw_vin:
+                CURRENT_DEVICE_ID = raw_vin
+                print(f"VIN détecté : {CURRENT_DEVICE_ID}")
+        else:
+            print("VIN non detecter")
+            CURRENT_DEVICE_ID = "Volvo-S60-T5"
     return connection
 
 
@@ -85,8 +96,6 @@ def query_low_freq(conn):
 def build_payload(high_data, low_data):
     iso_timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    # Simulation d'un code DTC bidon une fois de temps en temps pour tester ton UI
-    # Décommente les lignes ci-dessous si tu veux voir la bannière "Check Engine" s'allumer !
     dtc_present = False
     dtc_codes = []
     # if random.random() > 0.85:
@@ -94,7 +103,7 @@ def build_payload(high_data, low_data):
     #     dtc_codes = ["P0300", "P0101"]
 
     return {
-        "device_id": "Volvo-S60-T5",
+        "device_id": CURRENT_DEVICE_ID,
         "timestamp": iso_timestamp,
         "metrics": {
             "engine_rpm": (
