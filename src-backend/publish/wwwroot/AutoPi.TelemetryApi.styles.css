@@ -237,7 +237,77 @@
 }
 .btn-resume:hover:not([disabled])[b-ltv2yzs9fh] { color: var(--txt); border-color: rgba(0,0,0,0.55); }
 .btn-resume:disabled[b-ltv2yzs9fh] { opacity: 0.30; cursor: not-allowed; }
-.btn-resume + .btn-delete[b-ltv2yzs9fh] { margin-left: 4px; }
+.btn-resume + .btn-delete[b-ltv2yzs9fh],
+.btn-resume + .btn-demo[b-ltv2yzs9fh],
+.btn-resume + .btn-demo-stop[b-ltv2yzs9fh] { margin-left: 4px; }
+.btn-demo + .btn-delete[b-ltv2yzs9fh],
+.btn-demo-stop + .btn-delete[b-ltv2yzs9fh] { margin-left: 4px; }
+
+/* Demo bar */
+
+.demo-bar[b-ltv2yzs9fh] {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 20px;
+    background: #071a10;
+    border-bottom: 1px solid #0e3020;
+    font-family: var(--fn);
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+}
+.demo-label[b-ltv2yzs9fh] {
+    color: #4fd98a;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    animation: demo-blink-b-ltv2yzs9fh 1.5s step-start infinite;
+}
+@keyframes demo-blink-b-ltv2yzs9fh {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.45; }
+}
+.demo-stop-btn[b-ltv2yzs9fh] {
+    background: none;
+    border: 1px solid #1a5535;
+    color: #4fd98a;
+    font-family: var(--fn);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    padding: 4px 14px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+.demo-stop-btn:hover[b-ltv2yzs9fh] { opacity: 0.75; }
+
+/* Demo buttons in history table */
+
+.btn-demo[b-ltv2yzs9fh] {
+    background: none;
+    border: 1px solid #1a3528;
+    color: #3a7a5a;
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+}
+.btn-demo:hover:not([disabled])[b-ltv2yzs9fh] { color: #5aaf8a; border-color: #3a7a5a; }
+.btn-demo:disabled[b-ltv2yzs9fh] { opacity: 0.30; cursor: not-allowed; }
+
+.btn-demo-stop[b-ltv2yzs9fh] {
+    background: #071a10;
+    border: 1px solid #1a5535;
+    color: #4fd98a;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+.btn-demo-stop:hover[b-ltv2yzs9fh] { opacity: 0.75; }
 
 .btn-stop[b-ltv2yzs9fh] {
     background: #2e0d0d;

@@ -203,7 +203,7 @@
                                 <td style="font-family: var(--fn); font-size: 0.85rem; font-weight: 600;">
                                     @(string.IsNullOrWhiteSpace(s.Title) ? $"Trajet #{s.Id}" : s.Title)
                                 </td>
-                                <td class="muted">@s.DeviceId</td>
+                                <td class="muted">@VehiculeRegistry.ResolveName(s.DeviceId)</td>
                                 <td class="mono">@s.StartTime.ToLocalTime().ToString("dd/MM/yy HH:mm")</td>
                                 <td class="mono @(s.EndTime is null ? "crit-txt" : "")">
                                     @(s.EndTime.HasValue
