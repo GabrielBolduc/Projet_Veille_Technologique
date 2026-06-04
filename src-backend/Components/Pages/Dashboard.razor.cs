@@ -10,6 +10,7 @@ public partial class Dashboard : IAsyncDisposable
     [Inject] NavigationManager Navigation { get; set; } = default!;
     [Inject] IDbContextFactory<TelemetryDbContext> DbFactory { get; set; } = default!;
     [Inject] DatabaseProcessor Processor { get; set; } = default!;
+    [Inject] ITelemetryStreamer Streamer { get; set; } = default!;
 
     // SignalR
 
@@ -63,7 +64,8 @@ public partial class Dashboard : IAsyncDisposable
 
     private sealed record SessionRow(
         int Id, string Title, string DeviceId, DateTime StartTime, DateTime? EndTime,
-        int MaxRpm, int MaxSpeed, int RecordCount)
+        int MaxRpm, int MaxSpeed, int RecordCount, double TotalKm,
+        double AvgEngineLoad, double AvgCoolantTemp, double AvgThrottle)
     {
         public string Duration => EndTime.HasValue
             ? (EndTime.Value - StartTime).ToString(@"hh\:mm\:ss")
@@ -85,15 +87,44 @@ public partial class Dashboard : IAsyncDisposable
                 .Select(s => new
                 {
                     s.Id, s.Title, s.DeviceId, s.StartTime, s.EndTime,
-                    MaxRpm      = s.Records.Max(r => (int?)r.EngineRpm)    ?? 0,
-                    MaxSpeed    = s.Records.Max(r => (int?)r.VehicleSpeed) ?? 0,
-                    RecordCount = s.Records.Count()
+                    MaxRpm          = s.Records.Max(r => (int?)r.EngineRpm)              ?? 0,
+                    MaxSpeed        = s.Records.Max(r => (int?)r.VehicleSpeed)           ?? 0,
+                    RecordCount     = s.Records.Count(),
+                    AvgEngineLoad   = s.Records.Average(r => (double?)r.EngineLoad)      ?? 0,
+                    AvgCoolantTemp  = s.Records.Average(r => (double?)r.CoolantTemperature) ?? 0,
+                    AvgThrottle     = s.Records.Average(r => (double?)r.ThrottlePosition) ?? 0
                 })
                 .ToListAsync();
 
+            var sessionIds = raw.Select(x => x.Id).ToList();
+
+            var speedPoints = await db.Records
+                .Where(r => sessionIds.Contains(r.TripSessionId) && r.VehicleSpeed != null)
+                .OrderBy(r => r.TripSessionId)
+                .ThenBy(r => r.ReceivedAt)
+                .Select(r => new { r.TripSessionId, r.ReceivedAt, r.VehicleSpeed })
+                .ToListAsync();
+
+            var kmBySession = speedPoints
+                .GroupBy(r => r.TripSessionId)
+                .ToDictionary(g => g.Key, g =>
+                {
+                    double km = 0;
+                    var pts = g.ToList();
+                    for (int i = 1; i < pts.Count; i++)
+                    {
+                        double hours    = (pts[i].ReceivedAt - pts[i - 1].ReceivedAt).TotalHours;
+                        double avgSpeed = ((pts[i - 1].VehicleSpeed ?? 0) + (pts[i].VehicleSpeed ?? 0)) / 2.0;
+                        km += avgSpeed * hours;
+                    }
+                    return km;
+                });
+
             _sessions = raw.Select(x =>
                 new SessionRow(x.Id, x.Title, x.DeviceId, x.StartTime, x.EndTime,
-                               x.MaxRpm, x.MaxSpeed, x.RecordCount))
+                               x.MaxRpm, x.MaxSpeed, x.RecordCount,
+                               kmBySession.GetValueOrDefault(x.Id, 0.0),
+                               x.AvgEngineLoad, x.AvgCoolantTemp, x.AvgThrottle))
                 .ToList();
         }
         catch (Exception ex)
@@ -160,6 +191,24 @@ public partial class Dashboard : IAsyncDisposable
     {
         await Processor.ResumeSessionAsync(id);
         await LoadHistoryAsync();
+        StateHasChanged();
+    }
+
+    // Mode présentation
+
+    private int? _demoSessionId = null;
+
+    private async Task StartDemoAsync(int sessionId)
+    {
+        await Streamer.StartAsync(sessionId);
+        _demoSessionId = sessionId;
+        await SwitchTabAsync("live");
+    }
+
+    private async Task StopDemoAsync()
+    {
+        await Streamer.StopAsync();
+        _demoSessionId = null;
         StateHasChanged();
     }
 

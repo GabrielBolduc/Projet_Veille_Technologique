@@ -33,12 +33,18 @@ def connect():
         return MockConn()
 
     print(f"[INFO] Tentative de connexion à l'adaptateur sur {PORT}...")
-    connection = obd.OBD(PORT)
+    connection = obd.OBD(PORT, baudrate=38400, fast=False)
     if connection.is_connected():
         print("Connecter a la voiture")
         response = connection.query(obd.commands.VIN)
         if response and not response.is_null():
-            raw_vin = str(response.value).strip()
+            vin_brut = response.value
+            
+            if isinstance(vin_brut, (bytes, bytearray)):
+                raw_vin = vin_brut.decode("utf-8").strip()
+            else:
+                raw_vin = str(vin_brut).strip()
+                
             if raw_vin:
                 CURRENT_DEVICE_ID = raw_vin
                 print(f"VIN détecté : {CURRENT_DEVICE_ID}")
@@ -46,9 +52,6 @@ def connect():
             print("VIN non detecter")
             CURRENT_DEVICE_ID = "Volvo-S60-T5"
     return connection
-
-
-# Variables globales pour générer une simulation fluide (ondes sinusoïdales)
 _sim_tick = 0
 
 

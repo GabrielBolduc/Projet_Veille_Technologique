@@ -37,6 +37,8 @@ builder.Services.AddSingleton<SessionStats>();
 builder.Services.AddSingleton<DatabaseProcessor>();
 builder.Services.AddHostedService(sp => sp.GetRequiredService<DatabaseProcessor>());
 
+builder.Services.AddSingleton<ITelemetryStreamer, PresentationStreamer>();
+
 builder.Services.AddSignalR();
 
 builder.Services.AddRazorComponents()

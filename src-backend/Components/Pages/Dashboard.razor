@@ -50,6 +50,14 @@
 
     </header>
 
+    @if (Streamer.IsStreaming)
+    {
+        <div class="demo-bar">
+            <span class="demo-label">MODE PRÉSENTATION</span>
+            <button class="demo-stop-btn" @onclick="StopDemoAsync">ARRÊTER</button>
+        </div>
+    }
+
     @if (_activeTab == "live")
     {
         <main class="grid">
@@ -180,6 +188,10 @@
                             <th>Durée</th>
                             <th>RPM Max</th>
                             <th>Vit. Max</th>
+                            <th>Distance</th>
+                            <th>Charge moy.</th>
+                            <th>Temp. moy.</th>
+                            <th>Throttle moy.</th>
                             <th>Enreg.</th>
                             <th></th>
                         </tr>
@@ -201,6 +213,10 @@
                                 <td class="mono muted">@s.Duration</td>
                                 <td class="mono @(s.MaxRpm >= 5500 ? "crit-txt" : "")">@s.MaxRpm.ToString("N0")</td>
                                 <td class="mono @(s.MaxSpeed > 200 ? "crit-txt" : "")">@s.MaxSpeed</td>
+                                <td class="mono">@s.TotalKm.ToString("F1") <span style="font-size:0.75em;opacity:0.6">km</span></td>
+                                <td class="mono">@s.AvgEngineLoad.ToString("F1") <span style="font-size:0.75em;opacity:0.6">%</span></td>
+                                <td class="mono @(s.AvgCoolantTemp > 105 ? "crit-txt" : "")">@((int)s.AvgCoolantTemp) <span style="font-size:0.75em;opacity:0.6">°C</span></td>
+                                <td class="mono">@s.AvgThrottle.ToString("F1") <span style="font-size:0.75em;opacity:0.6">%</span></td>
                                 <td class="mono muted">@s.RecordCount</td>
                                 <td class="action-cell">
                                     @if (s.EndTime is null && Processor.IsTrackingActive)
@@ -213,6 +229,17 @@
                                                 @onclick="() => ResumeSessionAsync(s.Id)"
                                                 disabled="@Processor.IsTrackingActive"
                                                 title="Reprendre ce trajet">Reprendre</button>
+                                        @if (_demoSessionId == s.Id)
+                                        {
+                                            <button class="btn-demo-stop" @onclick="StopDemoAsync" title="Arrêter la démo">STOPPER</button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn-demo"
+                                                    @onclick="() => StartDemoAsync(s.Id)"
+                                                    disabled="@Streamer.IsStreaming"
+                                                    title="Rejouer ce trajet en boucle">DÉMO</button>
+                                        }
                                         <button class="btn-delete" @onclick="() => OpenDeleteModal(s.Id, s.Title)" title="Supprimer">Supprimer</button>
                                     }
                                 </td>
