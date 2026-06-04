@@ -4,9 +4,9 @@ import time
 from datetime import datetime, timezone
 import requests
 
-SIMULATION = True # Mode Simulation 
+SIMULATION = False # Mode Simulation 
 API_URL = "http://127.0.0.1:5000/api/telemetry"
-PORT = "COM3"
+PORT = "/dev/rfcomm0"
 HIGH_FREQ_INTERVAL = 0.1  # 10 Hz
 LOW_FREQ_INTERVAL = 10.0  # 0.1 Hz
 
