@@ -1,5 +1,8 @@
 # Gabriel Bolduc
 
+##
+Documentation : https://gabrielbolduc.github.io/Projet_Veille_Technologique/introduction/
+
 ## Exploration des idées
 
 ### 1- API d’inventaire et calcul de coûts pour imprimante 3D
