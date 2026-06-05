@@ -28,8 +28,17 @@ plugins:
   - search
 
 nav:
-  - Introduction: index.md
-  - Architecture Matérielle & Backend: 
+  - Présentation: 
+    - Pagination: index.md
+    - Table des matières: table_matieres.md
+    - Introduction: introduction.md
+    - Architecture: projet_architecture.md
+    - Collecteur embarqué: collecteur_pi.md
+    - Backend et API: backend_aspnet.md
+    - Dashboard: dashboard_blazor.md
+    - Conclusion: conclusion.md
+    - Médiagraphie: mediagraphie.md
+  - Recherche préliminaire:
     - Hardware: AMB/hardware.md
     - Spécifications OpenSpec: AMB/specs.md
     - Données de Télémétrie: AMB/telemetrie.md
