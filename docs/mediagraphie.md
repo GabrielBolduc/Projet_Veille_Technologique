@@ -1,16 +1,17 @@
 # 7. Médiagraphie / Utilisation de l'IA
 
 ## 7.1 Références
+Voici les article et documentation que j'ai consulter pendant ma recherche : 
 
-D. Werner, « python-obd: A Python module for handling data from car OBD-II ports ». Disponible sur : https://github.com/brendan-w/python-obd
+* D. Werner, « python-obd: A Python module for handling data from car OBD-II ports ». Disponible sur : https://github.com/brendan-w/python-obd
 
-Microsoft Learn, « Minimal APIs overview | ASP.NET Core ». Disponible sur : https://learn.microsoft.com/aspnet/core/fundamentals/minimal-apis
+*  Microsoft Learn, « Minimal APIs overview | ASP.NET Core ». Disponible sur : https://learn.microsoft.com/aspnet/core/fundamentals/minimal-apis
 
-Microsoft Learn, « Introduction to System.Threading.Channels ». Disponible sur : https://devblogs.microsoft.com/dotnet/an-introduction-to-system-threading-channels/
+*  Microsoft Learn, « Introduction to System.Threading.Channels ». Disponible sur : https://devblogs.microsoft.com/dotnet/an-introduction-to-system-threading-channels/
 
-Microsoft Learn, « Introduction to ASP.NET Core SignalR ». Disponible sur : https://learn.microsoft.com/aspnet/core/signalr/introduction
+* Microsoft Learn, « Introduction to ASP.NET Core SignalR ». Disponible sur : https://learn.microsoft.com/aspnet/core/signalr/introduction
 
-Raspberry Pi Foundation, « Raspberry Pi Documentation ». Disponible sur : https://www.raspberrypi.com/documentation/
+* Raspberry Pi Foundation, « Raspberry Pi Documentation ». Disponible sur : https://www.raspberrypi.com/documentation/
 
 ---
 
@@ -19,7 +20,7 @@ Raspberry Pi Foundation, « Raspberry Pi Documentation ». Disponible sur : http
 ### OpenSpec
 Puisque j'ai utiliser l'outil OpenSpec, tout les Prompt OpenSpec utiliser sont dans le dossier openspec/archive de mon projet.
 
-De plus, j'ai utiliser l'AI pour pour 2 context
+De plus, j'ai utiliser l'AI pour pour 2 contexts. 
 
 
 ### Contexte 1 — Configuration du Raspberry Pi Zero 2 W
