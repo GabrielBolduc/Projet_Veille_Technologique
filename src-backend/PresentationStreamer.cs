@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AutoPi.TelemetryApi;
 
+// service de streaming pour la présentation : lit les donne d'une session en base et les diffuse en boucle vers le dashboard Blazor via le channel
 public class PresentationStreamer(
     IDbContextFactory<TelemetryDbContext> dbFactory,
     ChannelWriter<TelemetryPayload> writer,
@@ -14,6 +15,7 @@ public class PresentationStreamer(
 
     public bool IsStreaming => _cts is { IsCancellationRequested: false };
 
+    // démarre le streaming d'une session spécifique ou de toutes les sessions si sessionId est null.
     public Task StartAsync(int? sessionId = null)
     {
         if (IsStreaming) return Task.CompletedTask;
@@ -33,6 +35,7 @@ public class PresentationStreamer(
         return Task.CompletedTask;
     }
 
+    // boucle de lecture du channel
     private async Task RunAsync(int? sessionId, CancellationToken ct)
     {
         try

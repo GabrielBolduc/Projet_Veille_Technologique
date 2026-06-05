@@ -11,6 +11,7 @@ public class TelemetryDbContext : DbContext
     {
     }
 
+    // Configuration du modèle de données
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<TelemetryRecord>()

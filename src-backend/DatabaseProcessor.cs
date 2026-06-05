@@ -2,13 +2,15 @@
 
 namespace AutoPi.TelemetryApi;
 
+// service de fond qui lit les payloads du channel, les envoie vers le dashboard Blazor avec SignalR, et les envoi vers la base de données
 public class DatabaseProcessor(
     DbChannelReader dbReader,
     IServiceProvider services,
     ILogger<DatabaseProcessor> logger)
     : BackgroundService
 {
-    private volatile bool _isTrackingActive = false;
+    // état interne du suivi de session
+    private volatile bool _isTrackingActive = false; 
     private int?  _currentSessionId;
     private string _pendingTitle = "";
     private readonly List<TelemetryRecord> _batch = new();
@@ -19,8 +21,7 @@ public class DatabaseProcessor(
 
     public bool IsTrackingActive => _isTrackingActive;
 
-
-    // Démarre le suivi avec le nom de trajet choisi par l'utilisateur.
+    // Démarre une nouvelle session de conduite ou reprend une session existante non supprimer.
     public async Task StartTrackingAsync(string title)
     {
         if (_isTrackingActive) return;
@@ -45,7 +46,7 @@ public class DatabaseProcessor(
         logger.LogInformation("[DB] Suivi démarré : {Title}.", title);
     }
 
-    // Clôture la session courante avec EndTime et arrête le suivi.
+    // Termine la session en cours flush les donnee
     public async Task CloseCurrentSessionAsync()
     {
         if (!_isTrackingActive) return;
@@ -105,7 +106,7 @@ public class DatabaseProcessor(
         }
     }
 
-
+    // boucle de lecture du channel
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         logger.LogInformation("[DB] DatabaseProcessor démarré.");
@@ -140,7 +141,7 @@ public class DatabaseProcessor(
                 await FlushAsync(CancellationToken.None);
         }
     }
-
+    // traite un payload : création de session si besoin, ajout au batch, flush si seuil atteint
     private async Task HandleAsync(TelemetryPayload p, CancellationToken ct)
     {
         if (!_isTrackingActive) return;
@@ -167,7 +168,7 @@ public class DatabaseProcessor(
         if (_batch.Count >= BatchSize || DateTime.UtcNow - _lastSave >= FlushInterval)
             await FlushAsync(ct);
     }
-
+    // persiste le batch en base et réinitialise l'état
     private async Task FlushAsync(CancellationToken ct)
     {
         try

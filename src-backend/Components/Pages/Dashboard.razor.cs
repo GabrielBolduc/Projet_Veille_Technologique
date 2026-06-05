@@ -7,21 +7,22 @@ namespace AutoPi.TelemetryApi.Components.Pages;
 
 public partial class Dashboard : IAsyncDisposable
 {
+
     [Inject] NavigationManager Navigation { get; set; } = default!;
-    [Inject] IDbContextFactory<TelemetryDbContext> DbFactory { get; set; } = default!;
-    [Inject] DatabaseProcessor Processor { get; set; } = default!;
-    [Inject] ITelemetryStreamer Streamer { get; set; } = default!;
+    [Inject] IDbContextFactory<TelemetryDbContext> DbFactory { get; set; } = default!; 
+    [Inject] DatabaseProcessor Processor { get; set; } = default!; 
+    [Inject] ITelemetryStreamer Streamer { get; set; } = default!; 
 
     // SignalR
 
     private HubConnection? _hubConnection;
 
-    private int    Rpm         = 0;
-    private int    Speed       = 0;
-    private double Throttle    = 0;
-    private double EngineLoad  = 0;
+    private int    Rpm = 0;
+    private int    Speed = 0;
+    private double Throttle = 0;
+    private double EngineLoad = 0;
     private double CoolantTemp = 0;
-    private bool   DtcPresent  = false;
+    private bool   DtcPresent = false;
     private List<string> DtcCodes = new();
 
     private int MaxRpm   = 0;
@@ -33,23 +34,27 @@ public partial class Dashboard : IAsyncDisposable
 
     private bool IsShiftLightActive => Rpm >= 5500;
 
+    // propriétés calculee pour les graphiques
     private string RpmChartPoints   => HistoryToPoints(RpmHistory,   8000, 120, 24);
     private string SpeedChartPoints => HistoryToPoints(SpeedHistory,  220, 120, 24);
 
+    // convertir une liste de valeurs en points SVG pour les graphiques d'historique
     private static string HistoryToPoints(List<int> history, double hardMax, double w, double h)
     {
+        // attend au moins 2 points pour dessiner une courbe sinon on retourne une chaîne vide
         if (history.Count < 2) return string.Empty;
         double dataMax = history.Max();
         double scale = dataMax > 0 ? Math.Min(dataMax * 1.2, hardMax) : hardMax;
         double xStep = w / (history.Count - 1);
         return string.Join(" ", history.Select((v, i) =>
-            $"{i * xStep:F1},{(1 - Math.Clamp(v / scale, 0, 1)) * h:F1}"));
+            $"{i * xStep:F1},{(1 - Math.Clamp(v / scale, 0, 1)) * h:F1}")); // inverse l'axe Y pour que les valeurs plus élevées soient en haut du graphique
     }
 
     // Onglets
 
     private string _activeTab = "live";
 
+    // changement d'onglet avec chargement de l'historique si nécessaire
     private async Task SwitchTabAsync(string tab)
     {
         _activeTab = tab;
@@ -58,10 +63,10 @@ public partial class Dashboard : IAsyncDisposable
     }
 
     // Historique SQLite 
-
     private bool _loadingHistory = false;
     private List<SessionRow> _sessions = new();
 
+    // classe interne pour représenter une ligne de session dans l'historique avec des stats pré-calculées
     private sealed record SessionRow(
         int Id, string Title, string DeviceId, DateTime StartTime, DateTime? EndTime,
         int MaxRpm, int MaxSpeed, int RecordCount, double TotalKm,
@@ -98,6 +103,7 @@ public partial class Dashboard : IAsyncDisposable
 
             var sessionIds = raw.Select(x => x.Id).ToList();
 
+            // calcul du total de km parcourus par session a partir des point de vitesse et des timestamps
             var speedPoints = await db.Records
                 .Where(r => sessionIds.Contains(r.TripSessionId) && r.VehicleSpeed != null)
                 .OrderBy(r => r.TripSessionId)
@@ -209,6 +215,10 @@ public partial class Dashboard : IAsyncDisposable
     {
         await Streamer.StopAsync();
         _demoSessionId = null;
+        Rpm = 0; Speed = 0; Throttle = 0; EngineLoad = 0; CoolantTemp = 0;
+        MaxRpm = 0; MaxSpeed = 0;
+        DtcPresent = false; DtcCodes = new();
+        RpmHistory.Clear(); SpeedHistory.Clear();
         StateHasChanged();
     }
 

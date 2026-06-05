@@ -25,9 +25,7 @@ builder.Services.AddSingleton(new DbChannelReader(dbChannel.Reader));
 
 builder.Services.AddHostedService<TelemetryProcessor>();
 
-// Configuration de la base de données SQLite avec EF Core
-// AddDbContextFactory enregistre la factory (singleton) ET le DbContext (scoped),
-// ce qui permet l'injection de IDbContextFactory<> dans les composants Blazor.
+// Configuration de Entity Framework Core avec SQLite
 var dbPath = Path.Combine(builder.Environment.ContentRootPath, "autopi.db");
 builder.Services.AddDbContextFactory<TelemetryDbContext>(options =>
     options.UseSqlite($"Data Source={dbPath}"));

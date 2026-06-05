@@ -2,6 +2,7 @@
 
 namespace AutoPi.TelemetryApi;
 
+// model de donne pour EF Core pour conduite
 public class TripSession
 {
     public int       Id        { get; set; }
@@ -12,7 +13,7 @@ public class TripSession
 
     public List<TelemetryRecord> Records { get; set; } = new();
 }
-
+// registry de vehicules connus pour resolution de nom a partir du deviceId
 public static class VehiculeRegistry
 {
     public static string ResolveName(string deviceId)
@@ -20,7 +21,7 @@ public static class VehiculeRegistry
         return VehicleDictionary.ResolveVehicleName(deviceId);
     }
 }
-
+// model de donne pour EF Core pour les enregistrements de telemetrie
 public class TelemetryRecord
 {
     public long     Id            { get; set; }

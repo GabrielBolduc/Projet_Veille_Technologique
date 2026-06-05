@@ -2,6 +2,7 @@
 
 namespace AutoPi.TelemetryApi;
 
+// hub SignalR pour diffuser les donnee en live vers le dashboard Blazor
 public class TelemetryHub(ILogger<TelemetryHub> logger) : Hub
 {
     public override Task OnConnectedAsync()
