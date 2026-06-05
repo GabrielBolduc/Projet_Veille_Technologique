@@ -260,7 +260,6 @@
     color: #4fd98a;
     font-weight: 700;
     letter-spacing: 0.18em;
-    animation: demo-blink-b-ltv2yzs9fh 1.5s step-start infinite;
 }
 @keyframes demo-blink-b-ltv2yzs9fh {
     0%, 100% { opacity: 1; }

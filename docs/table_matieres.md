@@ -1,5 +1,4 @@
 # Table des matières
-*Pagination : ii*
 
 *   [1. Introduction](introduction.md)
 *   [2. Explication du projet et architecture globale](projet_architecture.md)
