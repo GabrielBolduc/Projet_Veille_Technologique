@@ -1,7 +1,7 @@
 # 7. Médiagraphie / Utilisation de l'IA
 
 ## 7.1 Références
-Voici les article et documentation que j'ai consulter pendant ma recherche : 
+Voici les articles et documentations que j'ai consulter pendant ma recherche : 
 
 * D. Werner, « python-obd: A Python module for handling data from car OBD-II ports ». Disponible sur : https://github.com/brendan-w/python-obd
 
