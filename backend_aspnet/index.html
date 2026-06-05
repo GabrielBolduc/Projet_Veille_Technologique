@@ -621,6 +621,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#43-cartographie-des-fichiers-du-backend-et-utilite" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Cartographie des fichiers du backend et utilité
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -996,6 +1007,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#43-cartographie-des-fichiers-du-backend-et-utilite" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.3 Cartographie des fichiers du backend et utilité
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1050,6 +1072,21 @@ Son fonctionnement simule le temps réel :</p>
 <li>Mise à jour du temps : Le streamer modifie l'heure d'enregistrement d'origine pour y mettre l'heure actuelle (<code>DateTime.UtcNow</code>). L'application pense que la donnée vient juste d'être récolter.</li>
 <li>Contrôle du rythme (10 Hz) : Le script applique une pause de 100 millisecondes (<code>Task.Delay(100)</code>) entre chaque ligne de données avant de l'envoyer au (<code>uiChannel</code>). Ce qui reproduit le rythme de la conduite.</li>
 </ol>
+<h2 id="43-cartographie-des-fichiers-du-backend-et-utilite">4.3 Cartographie des fichiers du backend et utilité</h2>
+<p>Voici le rôle et l'utilité de chaque fichier backend :</p>
+<ul>
+<li><strong><code>Program.cs</code></strong> : C'est le program principal. Il initialise l'application web, gère l'injection de dépendances, associe le Hub SignalR, configure le rendu des composants Blazor et expose l'API minimale HTTP POST (<code>/api/telemetry</code>) qui reçoit les données envoyées par le script Python.</li>
+<li><strong><code>TelemetryDbContext.cs</code></strong> : Ce fichier gère le contexte de base de données avec Entity Framework Core. C'est lui qui configure et ouvre la connexion avec le fichier local SQLite et expose les collections d'entités pour interagir avec les tables en C#.</li>
+<li><strong><code>Models.cs</code></strong> : Ce fichier regroupe les entités de persistance de la base de données.</li>
+<li><strong><code>TelemetryModel.cs</code></strong> : Ce fichier contient la classe <code>TelemetryData</code>. Il s'agit du modèle de transfert servant à récevoir  le paquet JSON envoyé par le Pi.</li>
+<li><strong><code>TelemetryProcessor.cs</code></strong> : Ce BackgroundService gère le premier canal mémoire. Il surveille le pipeline de réception et pousse chaque nouvelle donnée vers l'écran.</li>
+<li><strong><code>DatabaseProcessor.cs</code></strong> : Ce deuxième BackgroundService gère la persistance. Il est asynchrone pour sauvegarder les points dans SQLite sans ralentir l'affichage ni la réception de l'API.</li>
+<li><strong><code>TelemetryHub.cs</code></strong> : C'est le Hub SignalR. Il gère le WebSockets avec le navigateurs.</li>
+<li><strong><code>ITelemetryStreamer.cs</code></strong> : L'interface de programmation qui définit le contrat du moteur de simulation .</li>
+<li><strong><code>PresentationStreamer.cs</code></strong> : L'implémentation de la simulation. Ce fichier extrait un trajet enregistré dans SQLite, pour simuler le direct et injecte les données à 10 Hz dans l'application.</li>
+<li><strong><code>SessionStats.cs</code></strong> : Une classe pour calculer et compiler les statistiques globales d'un trajet (valeurs maximales de RPM, vitesse de pointe, moyennes et calcul de distance).</li>
+<li><strong><code>VehicleDictionary.cs</code></strong> : Ce fichier sert de dictionnaire de conversion pour le OBD2 afin de connaitre le modèle de la voiture</li>
+</ul>
 
 
 
