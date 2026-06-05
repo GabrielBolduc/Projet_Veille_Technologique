@@ -14,12 +14,13 @@ Raspberry Pi Foundation, « Raspberry Pi Documentation ». Disponible sur : http
 
 ---
 
-## 7.2 Utilisation de l'IA (Claude — Anthropic)
+## 7.2 Utilisation de l'AI dans mon projet (Claude)
 
 ### OpenSpec
-Tous les prompts OpenSpec utilisés sont archivés dans le dossier `openspec/archive` du projet.
+Puisque j'ai utiliser l'outil OpenSpec, tout les Prompt OpenSpec utiliser sont dans le dossier openspec/archive de mon projet.
 
----
+De plus, j'ai utiliser l'AI pour pour 2 context
+
 
 ### Contexte 1 — Configuration du Raspberry Pi Zero 2 W
 
@@ -37,7 +38,7 @@ La connexion SSH depuis VS Code crashait de façon répétée. L'IA a été util
 
 ### Contexte 2 — Mode streaming pour la présentation du projet
 
-L'IA a été utilisée pour concevoir une solution de streaming de données en temps réel dans une interface Blazor, incluant la simulation de données historiques.
+L'IA ma aider à trouver une solution efficase pour le mode streaming afin de pouvoir présenter le projet. De plus l'AI ma aider à générer un dictionaire pour traduire le code WMI d'un véhicule. 
 
 **Prompts utilisés :**
 
@@ -46,3 +47,5 @@ L'IA a été utilisée pour concevoir une solution de streaming de données en t
 « En C#, je veux créer un système pour simuler des données réelles récoltées. Je veux une interface ITelemetryStreamer. Explique comment je pourrais faire. »
 
 « Je veux programmer la classe qui utilise mon interface ITelemetryStreamer. Comment faire pour qu'elle lise mes anciennes données dans SQLite une par une et remplace l'heure par l'heure actuelle ? »
+
+« Aide moi pour faire une classe static en C# nommée VehicleDictionary. Elle doit contenir un dictionnaire qui associe des codes à 3 lettres de constructeurs automobiles (comme YV1 pour Volvo, 1FT pour Ford, 2HK pour Honda) avec le nom de la marque et du modèle. Ajoute une méthode ResolveVehicleName(string deviceId) qui prend le numéro de série d'un véhicule, extrait les 3 premières lettres pour chercher la marque dans le dictionnaire, et retourne le résultat. »

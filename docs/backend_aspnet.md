@@ -42,3 +42,19 @@ Son fonctionnement simule le temps réel :
 1. Extraction ciblée : À l'aide du LINQ (`.Select()`), le streamer charge en mémoire seulement les colonnes nécessaires de la table `Records` pour la session demandée, triées chronologiquement.
 2. Mise à jour du temps : Le streamer modifie l'heure d'enregistrement d'origine pour y mettre l'heure actuelle (`DateTime.UtcNow`). L'application pense que la donnée vient juste d'être récolter.
 3. Contrôle du rythme (10 Hz) : Le script applique une pause de 100 millisecondes (`Task.Delay(100)`) entre chaque ligne de données avant de l'envoyer au (`uiChannel`). Ce qui reproduit le rythme de la conduite.
+
+## 4.3 Cartographie des fichiers du backend et utilité
+
+Voici le rôle et l'utilité de chaque fichier backend :
+
+* **`Program.cs`** : C'est le program principal. Il initialise l'application web, gère l'injection de dépendances, associe le Hub SignalR, configure le rendu des composants Blazor et expose l'API minimale HTTP POST (`/api/telemetry`) qui reçoit les données envoyées par le script Python.
+* **`TelemetryDbContext.cs`** : Ce fichier gère le contexte de base de données avec Entity Framework Core. C'est lui qui configure et ouvre la connexion avec le fichier local SQLite et expose les collections d'entités pour interagir avec les tables en C#.
+* **`Models.cs`** : Ce fichier regroupe les entités de persistance de la base de données.
+* **`TelemetryModel.cs`** : Ce fichier contient la classe `TelemetryData`. Il s'agit du modèle de transfert servant à récevoir  le paquet JSON envoyé par le Pi.
+* **`TelemetryProcessor.cs`** : Ce BackgroundService gère le premier canal mémoire. Il surveille le pipeline de réception et pousse chaque nouvelle donnée vers l'écran.
+* **`DatabaseProcessor.cs`** : Ce deuxième BackgroundService gère la persistance. Il est asynchrone pour sauvegarder les points dans SQLite sans ralentir l'affichage ni la réception de l'API.
+* **`TelemetryHub.cs`** : C'est le Hub SignalR. Il gère le WebSockets avec le navigateurs.
+* **`ITelemetryStreamer.cs`** : L'interface de programmation qui définit le contrat du moteur de simulation .
+* **`PresentationStreamer.cs`** : L'implémentation de la simulation. Ce fichier extrait un trajet enregistré dans SQLite, pour simuler le direct et injecte les données à 10 Hz dans l'application.
+* **`SessionStats.cs`** : Une classe pour calculer et compiler les statistiques globales d'un trajet (valeurs maximales de RPM, vitesse de pointe, moyennes et calcul de distance).
+* **`VehicleDictionary.cs`** : Ce fichier sert de dictionnaire de conversion pour le OBD2 afin de connaitre le modèle de la voiture
